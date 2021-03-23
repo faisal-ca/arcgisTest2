@@ -11,7 +11,7 @@ import { AuthService} from '../services/authService'
 export class LoginComponent implements OnInit {
   form!:FormGroup;
   errorFlag:boolean=false;
-
+ //git testing
   constructor(public auth:AuthService,
               public fb:FormBuilder,
               public router:Router) { }
