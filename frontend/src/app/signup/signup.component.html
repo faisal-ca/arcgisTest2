@@ -1,0 +1,101 @@
+<head>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+<body>
+<div class="bg">
+<div class="signup-form">
+    <form [formGroup]="form">
+		<h2>Sign Up</h2>
+		<p>Please fill in this form to create an account!</p>
+		<hr>
+        <div class="form-group">
+			<div class="input-group">
+				<div class="input-group-prepend">
+					<span class="input-group-text">
+						<span class="fa fa-user-circle-o"></span>
+					</span>                    
+				</div>
+				<input type="text" class="form-control" formControlName="name" id="name" name="name" placeholder="Name" required="required" />
+            </div>
+            <div *ngIf="submitted && f.name.hasError('required')" width="100px">
+                <p class="errorText" >Name Required</p>
+            </div>
+        </div>
+        
+        <div class="form-group">
+			<div class="input-group">
+				<div class="input-group-prepend">
+					<span class="input-group-text">
+						<span class="fa fa-user"></span>
+					</span>                    
+				</div>
+				<input type="text" class="form-control" formControlName="username" name="username" placeholder="Username" required="required">
+			</div>
+        </div>
+        <div *ngIf="submitted && f.username.hasError('required')">
+            <p class="errorText">Username Required</p>
+        </div>
+        <div class="form-group">
+			<div class="input-group">
+				<div class="input-group-prepend">
+					<span class="input-group-text">
+						<i class="fa fa-paper-plane"></i>
+					</span>                    
+				</div>
+				<input type="email" class="form-control" name="email" formControlName="email" placeholder="Email Address" required="required">
+			</div>
+        </div>
+        <div *ngIf="submitted && f.email.hasError('required')">
+            <p class="errorText">Email Required</p>
+        </div>
+		<div class="form-group">
+			<div class="input-group">
+				<div class="input-group-prepend">
+					<span class="input-group-text">
+						<i class="fa fa-lock"></i>
+					</span>                    
+				</div>
+				<input type="password" class="form-control" name="password" formControlName="password" placeholder="Password" required="required">
+			</div>
+        </div>
+        <div *ngIf="submitted && f.password.hasError('required')">
+            <p class="errorText">Password Required</p>
+        </div>
+		<div class="form-group">
+			<div class="input-group">
+				<div class="input-group-prepend">
+					<span class="input-group-text">
+						<i class="fa fa-lock"></i>
+						<i class="fa fa-check"></i>
+					</span>                    
+				</div>
+				<input type="password" class="form-control" name="confirm_password" formControlName="confpassword"placeholder="Confirm Password" required="required">
+			</div>
+        </div>
+        <div *ngIf="submitted && f.confpassword.hasError('required')">
+            <p class="errorText">Conf. Password Required</p>
+        </div>
+        <div class="form-group">
+			<label class="form-check-label"><input type="checkbox" required="required"> I accept the <a href="#">Terms of Use</a> &amp; <a href="#">Privacy Policy</a></label>
+		</div>
+		<div class="form-group">
+            <button type="submit" class="btn btn-primary btn-lg" (click)="onClickSignUp()">Sign Up</button>
+        </div>
+        <div>
+            <p *ngIf="errorFlag" class="errorText">Passwords do not match</p>
+        </div>
+        <div>
+            <p *ngIf="usernameFlag" class="errorText">Username already excist</p>
+        </div>
+        <div>
+            <p *ngIf="successFlag" class="successText">You are succesfully signed up, please go to
+                <a routerLink="/login" routerLinkActive="active">Login Page</a> to login
+            </p>
+        </div>
+    </form>
+	<div class="text-center">Already have an account? <a routerLink="/login" routerLinkActive="active">Login here</a></div>
+    
+</div>
+</div>
+</body>

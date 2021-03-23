@@ -1,0 +1,66 @@
+<!-- CSS only -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
+<!-- JavaScript Bundle with Popper -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js" integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0" crossorigin="anonymous"></script>
+
+<nav class="navbar navbar-dark bg_login h10">
+    <a class="navbar-brand mm">Pole Viewer</a>
+    <form class="form-inline">
+      <label class="navbar-brand mm">{{userName}}</label> 
+        <img class="mm imgMenu" src="/assets/images/menu.png" [matMenuTriggerFor]="menu"/>
+    </form>
+</nav>
+<div class="wf">
+    <div id="tableDiv" class="div1">
+      <mat-form-field>
+        <mat-label>Filter</mat-label>
+        <input matInput (keyup)="applyFilter($event)" placeholder="search" #input>
+      </mat-form-field>
+      <table mat-table [dataSource]="dataSource" class="mat-elevation-z8" >
+
+        <!--- Note that these columns can be defined in any order.
+              The actual rendered columns are set as a property on the row definition" -->
+      
+        <!-- Position Column -->
+        <ng-container matColumnDef="objectid">
+          <th mat-header-cell *matHeaderCellDef> ID </th>
+          <td mat-cell *matCellDef="let element"> {{element.objectid}} </td>
+        </ng-container>
+      
+        <!-- Name Column -->
+        <ng-container matColumnDef="name" ng-repeat="element in List| filter: search">
+          <th mat-header-cell *matHeaderCellDef> Name </th>
+          <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+        </ng-container>
+      
+        <!-- Weight Column -->
+        <ng-container matColumnDef="longitude">
+          <th mat-header-cell *matHeaderCellDef> Longitude </th>
+          <td mat-cell *matCellDef="let element"> {{decimalChecker(element.longitude)}} </td>
+        </ng-container>
+      
+        <!-- Symbol Column -->
+        <ng-container matColumnDef="latitude">
+          <th mat-header-cell *matHeaderCellDef> Latitude </th>
+          <td mat-cell *matCellDef="let element"> {{decimalChecker(element.latitude)}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="zoom">
+          <th mat-header-cell *matHeaderCellDef> Zoom </th>
+          <td mat-cell *matCellDef="let element"> <img src="./assets/images/zoom.png" class="imgZoom" (click)="zoomLocation(element)"/>  </td>
+        </ng-container>
+      
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
+    </div>
+    <div id="mapDiv" class="div2"><app-esri-map></app-esri-map></div>
+</div>
+<mat-menu #menu="matMenu">
+    <button mat-menu-item>
+      <span (click)="tableClick()">List of locations</span>
+    </button>
+    <button mat-menu-item>
+      <span (click)="logoutClick()">Log out</span>
+    </button>
+  </mat-menu>
