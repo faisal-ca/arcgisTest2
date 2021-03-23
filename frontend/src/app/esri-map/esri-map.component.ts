@@ -241,28 +241,34 @@ export class EsriMapComponent implements OnInit {
     //   content :"No address was found for this location"
     // });
     document.getElementById('boundErrorArea')!.style.display="none";
-    this.view.hitTest(evt).then(async (response:any)=> {
-      if (response.results.length > 0 && response.results[0].graphic) {
+    this.view.hitTest(evt).then((response:any) => {
+      if (response.results.length > 0 ) {
+        debugger;
+        if(response.results.length == 2&& response.results[0].graphic){
+          debugger;
+          var feature = response.results[0].graphic;
+          this.selectFeature(feature.attributes[this.featureLayer.objectIdField]);
+  
+          this.userForm.setValue({name: feature.attributes[
+            "name"]});
+            document.getElementById('featureUpdateDiv')!.style.display = "block";
+            document.getElementById('updateInstructionDiv')!.style.display = "none";
+            this.expand.expanded=true;
+        }
+        else if(response.results.length >2&& response.results[1].graphic){
+          debugger;
+          var feature = response.results[1].graphic;
+          this.selectFeature(feature.attributes[this.featureLayer.objectIdField]);
+  
+          this.userForm.setValue({name: feature.attributes[
+            "name"]});
+            document.getElementById('featureUpdateDiv')!.style.display = "block";
+            document.getElementById('updateInstructionDiv')!.style.display = "none";
+            this.expand.expanded=true;
+        }
 
-        var feature = response.results[0].graphic;
-        
-        await this.selectFeature(feature.attributes[this.featureLayer.objectIdField]);
-        
-
-        //this.userForm.setValue({name: String(feature.graphic.attributes.name)});
-
-        this.userForm.setValue({name: String(feature.attributes[
-            "name"])});
-        this.attributeEditing!.style.display = "block";
-        this.updateInstructionDiv!.style.display = "none";
-        this.expand.expanded=true;
-        
-        //this.inputDescription = String(feature.attributes[
-        //  "objectid"]);
-
-          
       }
-    });
+    })
   }
 
   async selectFeature(objectId:any) {
