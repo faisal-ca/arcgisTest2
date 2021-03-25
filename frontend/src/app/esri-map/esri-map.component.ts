@@ -154,7 +154,7 @@ export class EsriMapComponent implements OnInit {
           
                  
         }).then((lyr:any)=> {
-          //this.mainFeatureLayer = lyr;
+          //this.mainFeatureLayer = lyr;addd
           this.featureLayer=lyr;
           this.featureLayer.outFields=["*"];
           this.featureLayer.popupTemplate = {
