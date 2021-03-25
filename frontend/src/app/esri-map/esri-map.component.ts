@@ -404,15 +404,7 @@ var layerList = new LayerList({
       this.applyEdits(edits);
     }
   }
-  customPopupFunction(feature:any) {
-    
-    return `<table  style="table;width: 100%;";border=1;>
-    <h1>Location Info</h1>
-     <tr><th>id</th><td>${feature.graphic.attributes.objectid}</td></tr>
-     <tr><th>userid</th><td>${feature.graphic.attributes.userid}</td></tr>
-     <tr><th>name</th><td>${feature.graphic.attributes.name}</td></tr>
-     </table>`;
-  }
+  
   deleteClick(){
     this.invalidUserIdFlag=false;
     if(this.editFeature.attributes["userid"] != this.user_id)
