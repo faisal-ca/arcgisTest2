@@ -104,7 +104,7 @@ export class EsriMapComponent implements OnInit {
       try {
         //setDefaultOptions({ url: `./assets/widget` });
         // Load the modules for the ArcGIS API for JavaScript
-        const [Map, MapView, SceneView, Expand, Layer, FeatureLayer, Home, Popup] = await loadModules([
+        const [Map, MapView, SceneView, Expand, Layer, FeatureLayer, Home, Popup,BasemapGallery,Search,LayerList,ScaleBar,CoordinateConversion] = await loadModules([
           "esri/Map",
           "esri/views/MapView",
           "esri/views/SceneView",
@@ -112,9 +112,12 @@ export class EsriMapComponent implements OnInit {
           "esri/layers/Layer",
           "esri/layers/FeatureLayer",
           "esri/widgets/Home",
-          "esri/widgets/Popup"
-          
-          
+          "esri/widgets/Popup",
+          'esri/widgets/BasemapGallery',
+          'esri/widgets/Search',
+          'esri/widgets/LayerList',
+          'esri/widgets/ScaleBar',
+          'esri/widgets/CoordinateConversion',
 
         ]);
 
@@ -149,7 +152,11 @@ export class EsriMapComponent implements OnInit {
           //this.mainFeatureLayer = lyr;
           this.featureLayer=lyr;
           this.featureLayer.outFields=["*"];
+          this.featureLayer.popupTemplate = {
+            content: this.customPopupFunction.bind(this)
+          }
           this.fMap.add(lyr);
+          this.fMap.add(boundary);
         }).catch((error:any)=>console.log(error));
         // this.featureLayer= new FeatureLayer({
         //   url:"https://gis.nestit.net:3443/server/rest/services/TrainingPOC/POCNewService/FeatureServer/0",
@@ -192,7 +199,65 @@ export class EsriMapComponent implements OnInit {
   
         // Add the home button to the top left corner of the view
         view.ui.add(homeBtn, "top-left");
+//basemapgallery
+var basemapGallery = new BasemapGallery({
+  view: view,
+  container: document.createElement("div")
+});
 
+var bgExpand = new Expand({
+  view: view,
+  content: basemapGallery
+});
+basemapGallery.watch("activeBasemap", function() {
+  var mobileSize = view.heightBreakpoint === "xsmall" || view.widthBreakpoint === "xsmall";
+
+  if (mobileSize) {
+    bgExpand.collapse();
+  }
+});
+
+view.ui.add(bgExpand, "top-left");
+
+//
+//Seach widget
+var searchWidget = new Search({
+view: view
+});
+
+view.ui.add(searchWidget, {
+position: "top-right"
+});
+//
+//layerview
+var layerList = new LayerList({
+view: view
+});
+var layerlistexpand =new Expand({
+view: view,
+content: layerList,
+expanded:false,
+
+})
+view.ui.add(layerlistexpand, "top-right");
+//
+//scalebar
+var scaleBar = new ScaleBar({view: view,unit: "dual" });
+
+view.ui.add(scaleBar, {
+position: "bottom-left"
+});
+//
+var ccWidget = new CoordinateConversion({
+view: view
+});
+
+view.ui.add(ccWidget, "bottom-right");
+
+//bookmark
+
+//
+this.view=view;
         
 
         this.view=view;
@@ -208,6 +273,14 @@ export class EsriMapComponent implements OnInit {
         console.error("EsriLoader: ", error);
         return null;
       }
+  }
+  customPopupFunction(feature:any) {
+    return `<table  style="table;width: 100%;";border=1;>
+    <h1>Location Info</h1>
+     <tr><th>id</th><td>${feature.graphic.attributes.objectid}</td></tr>
+     <tr><th>userid</th><td>${feature.graphic.attributes.userid}</td></tr>
+     <tr><th>name</th><td>${feature.graphic.attributes.name}</td></tr>
+     </table>`;
   }
 
   hideElements(){
