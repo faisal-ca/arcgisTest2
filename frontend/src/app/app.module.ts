@@ -19,7 +19,9 @@ import { MatInputModule } from '@angular/material/input';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { SignupComponent } from './signup/signup.component';
 import { ProfileComponent } from './profile/profile.component';
-import { WindowComponent } from './window/window.component'
+import { WindowComponent } from './window/window.component';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 
 
 @NgModule({
@@ -43,7 +45,9 @@ import { WindowComponent } from './window/window.component'
     NoopAnimationsModule,
     MatTableModule,
     MatInputModule,
-    MatPaginatorModule
+    MatPaginatorModule,
+    MatCheckboxModule,
+    MatSlideToggleModule
   ],
   providers: [AuthService,HomeAuthService],
   bootstrap: [AppComponent]

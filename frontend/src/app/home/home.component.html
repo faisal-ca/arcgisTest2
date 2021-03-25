@@ -58,8 +58,9 @@
     <div id="mapDiv" class="div2"><app-esri-map></app-esri-map></div>
 </div>
 <mat-menu #menu="matMenu">
-    <button mat-menu-item>
-      <span (click)="tableClick()">List of locations</span>
+ 
+  <button mat-menu-item>
+    <span> List of locations <mat-slide-toggle [(ngModel)]="checked" (click)="tableClick()"></mat-slide-toggle></span>
     </button>
     <button mat-menu-item>
       <span (click)="profileClick()">Profile</span>
