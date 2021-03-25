@@ -104,7 +104,7 @@ export class EsriMapComponent implements OnInit {
       try {
         //setDefaultOptions({ url: `./assets/widget` });
         // Load the modules for the ArcGIS API for JavaScript
-        const [Map, MapView, SceneView, Expand, Layer, FeatureLayer, Home, Popup] = await loadModules([
+        const [Map, MapView, SceneView, Expand, Layer, FeatureLayer, Home, Popup,BasemapGallery,Search,LayerList,ScaleBar,CoordinateConversion,Bookmarks] = await loadModules([
           "esri/Map",
           "esri/views/MapView",
           "esri/views/SceneView",
@@ -112,7 +112,13 @@ export class EsriMapComponent implements OnInit {
           "esri/layers/Layer",
           "esri/layers/FeatureLayer",
           "esri/widgets/Home",
-          "esri/widgets/Popup"
+          "esri/widgets/Popup",
+          'esri/widgets/BasemapGallery',
+          'esri/widgets/Search',
+          'esri/widgets/LayerList',
+          'esri/widgets/ScaleBar',
+          'esri/widgets/CoordinateConversion',
+          'esri/widgets/Bookmarks'
           
           
 
@@ -145,11 +151,17 @@ export class EsriMapComponent implements OnInit {
           //url:"https://gis.nestit.net:3443/server/rest/services/Training/pgisTest1/MapServer/0"
           url:"https://gis.nestit.net:3443/server/rest/services/TrainingPOC/POCNewService/FeatureServer/0",
           outFields: ["*"],
+          
+                 
         }).then((lyr:any)=> {
-          //this.mainFeatureLayer = lyr;
+          //this.mainFeatureLayer = lyr;addd
           this.featureLayer=lyr;
           this.featureLayer.outFields=["*"];
+          this.featureLayer.popupTemplate = {
+          content: this.customPopupFunction.bind(this)}
           this.fMap.add(lyr);
+          this.fMap.add(boundary);
+          
         }).catch((error:any)=>console.log(error));
         // this.featureLayer= new FeatureLayer({
         //   url:"https://gis.nestit.net:3443/server/rest/services/TrainingPOC/POCNewService/FeatureServer/0",
@@ -158,7 +170,7 @@ export class EsriMapComponent implements OnInit {
         
         const mapProperties = {
           basemap: "gray",
-          //layers: [point]
+          //layers: [this.featureLayer, boundary]
         };
 
         
@@ -171,7 +183,8 @@ export class EsriMapComponent implements OnInit {
           container: this.mapViewEl.nativeElement,
           center: [ 75.611261,18.360603],
           zoom: 4,
-          map: this.fMap
+          map: this.fMap,
+          
         };
   
         const view = new MapView(mapViewProperties);
@@ -192,9 +205,76 @@ export class EsriMapComponent implements OnInit {
   
         // Add the home button to the top left corner of the view
         view.ui.add(homeBtn, "top-left");
-
+//basemapgallery
+        var basemapGallery = new BasemapGallery({
+          view: view,
+          container: document.createElement("div")
+        });
+  
+        var bgExpand = new Expand({
+          view: view,
+          content: basemapGallery
+        });
+        basemapGallery.watch("activeBasemap", function() {
+          var mobileSize = view.heightBreakpoint === "xsmall" || view.widthBreakpoint === "xsmall";
+  
+          if (mobileSize) {
+            bgExpand.collapse();
+          }
+        });
+  
+        view.ui.add(bgExpand, "top-left");
         
+//
+//Seach widget
+var searchWidget = new Search({
+  view: view
+});
 
+view.ui.add(searchWidget, {
+  position: "top-right"
+});
+//
+//layerview
+var layerList = new LayerList({
+  view: view
+  });
+  var layerlistexpand =new Expand({
+    view: view,
+    content: layerList,
+    expanded:false,
+
+  })
+  view.ui.add(layerlistexpand, "top-right");
+  //
+  //scalebar
+  var scaleBar = new ScaleBar({view: view,unit: "dual" });
+      
+      view.ui.add(scaleBar, {
+        position: "bottom-left"
+      });
+      //
+      var ccWidget = new CoordinateConversion({
+        view: view
+      });
+
+      view.ui.add(ccWidget, "bottom-right");
+
+      //bookmark
+      var bookmarks = new Bookmarks({
+        view: view,
+        // allows bookmarks to be added, edited, or deleted
+        editingEnabled: true
+      });
+
+      const bkExpand = new Expand({
+        view: view,
+        content: bookmarks,
+        expanded: false
+      })
+
+      view.ui.add(bkExpand, "top-right");
+      //
         this.view=view;
         await this.view.when();
         
@@ -242,9 +322,9 @@ export class EsriMapComponent implements OnInit {
     // });
     document.getElementById('boundErrorArea')!.style.display="none";
     this.view.hitTest(evt).then(async (response:any)=> {
-      if (response.results.length > 0 && response.results[0].graphic) {
+      if (response.results.length > 0 && response.results[1].graphic) {
 
-        var feature = response.results[0].graphic;
+        var feature = response.results[1].graphic;
         
         await this.selectFeature(feature.attributes[this.featureLayer.objectIdField]);
         
@@ -315,6 +395,15 @@ export class EsriMapComponent implements OnInit {
 
       this.applyEdits(edits);
     }
+  }
+  customPopupFunction(feature:any) {
+    
+    return `<table  style="table;width: 100%;";border=1;>
+    <h1>Location Info</h1>
+     <tr><th>id</th><td>${feature.graphic.attributes.objectid}</td></tr>
+     <tr><th>userid</th><td>${feature.graphic.attributes.userid}</td></tr>
+     <tr><th>name</th><td>${feature.graphic.attributes.name}</td></tr>
+     </table>`;
   }
   deleteClick(){
     this.invalidUserIdFlag=false;
