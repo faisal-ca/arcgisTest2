@@ -1,23 +1,30 @@
 {
-    "compilerOptions": {
-      "module": "amd",
-      "noImplicitAny": true,
-      "sourceMap": true,
-      "jsx": "react",
-      "jsxFactory": "tsx",
-      "experimentalDecorators": true,
-      "preserveConstEnums": true,
-      "suppressImplicitAnyIndexErrors": true,
-      "target": "es5",
-      "lib": [
+  "compileOnSave": false,
+  "compilerOptions": {
+    "baseUrl": "./",
+    "outDir": "./dist/out-tsc",
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "noImplicitReturns": true,
+    "esModuleInterop": true,
+    "noFallthroughCasesInSwitch": true,
+    "sourceMap": true,
+    "declaration": false,
+    "downlevelIteration": true,
+    "experimentalDecorators": true,
+    "moduleResolution": "node",
+    "importHelpers": true,
+    "target": "es2015",
+    "module": "es2020",
+    "lib": [
       "es2018",
       "dom"
-      ]
-    },
-    "include": [
-      "./app/*"
-    ],
-    "exclude": [
-      "node_modules"
     ]
+  },
+  "angularCompilerOptions": {
+    "enableI18nLegacyMessageIdFormat": false,
+    "strictInjectionParameters": true,
+    "strictInputAccessModifiers": true,
+    "strictTemplates": true
   }
+}
