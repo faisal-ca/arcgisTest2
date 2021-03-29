@@ -16,6 +16,9 @@ import { MatPaginator } from '@angular/material/paginator';
 export class AuthService implements  CanActivate{
     private API_URL="http://127.0.0.1:5000";
     static dataSource:any=null;
+    static searchString:string="";
+    currentPage:number=1;
+    totalPages:number=0;
     constructor(private http: HttpClient,private router:Router) {
     }
     canActivate(
@@ -95,9 +98,9 @@ export class AuthService implements  CanActivate{
       return this.http.post(`${this.API_URL}/user_info`, body, {headers: head, observe: 'response'})
               .pipe(catchError(this.erroHandler));
     }
-    locationList(): Observable<any> {
+    locationList(search:string): Observable<any> {
       const head = new HttpHeaders({ 'content-type': 'application/json'} ); 
-      const body="";
+      const body={"page": this.currentPage, "search":search};
       const httpOptions = {
         
         headers: head,
@@ -107,19 +110,37 @@ export class AuthService implements  CanActivate{
               .pipe(catchError(this.erroHandler));
     }
 
-    reloadDatasource():any{
-      return this.locationList().subscribe((data:any)=>{
+    reloadDatasource(search:string):any{
+      return this.locationList(search).subscribe((data:any)=>{
         if(data.body)
         {
+          this.totalPages=data.body.pages;
           if(AuthService.dataSource){
-            AuthService.dataSource.data=data.body;
+            AuthService.dataSource.data=data.body.list;
+            
           }
           else{
-            AuthService.dataSource=new MatTableDataSource(data.body);
+            AuthService.dataSource=new MatTableDataSource(data.body.list);
           }
           
         }
       });
+    }
+    increasePage(){
+      this.currentPage++;
+      if(this.currentPage > this.totalPages)
+      {
+        this.currentPage=this.totalPages;
+      }
+      this.reloadDatasource(AuthService.searchString);
+    }
+    decreasePage(){
+      this.currentPage--;
+      if(this.currentPage < 1)
+      {
+        this.currentPage=1;
+      }
+      this.reloadDatasource(AuthService.searchString);
     }
     erroHandler(error: HttpErrorResponse | any) {
       return throwError(error.message || 'server Error');

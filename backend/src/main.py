@@ -83,24 +83,49 @@ def get_locations():
 @app.route('/viewuserloc',  methods=['POST'])
 @login_required
 def get_locationsUser():
-   try:
-      '''
+   #try:
+      
       jj=request.get_json()
       userviewValidate=userviewloc_check(jj)
       if userviewValidate is not None:
          return jsonify({"success":False,"Message":"Json exception"})
-      '''
-      dbSession = Session()
-      #loc_objects = dbSession.query(Locationgeo.id,Locationgeo.userid,Locationgeo.name,ST_AsGeoJSON(Locationgeo.location).label('location')).filter(Locationgeo.userid==jj["user_id"])
-      loc_objects = dbSession.query(Locationgeo.objectid,Locationgeo.userid,Locationgeo.name,ST_X(Locationgeo.shape).label('longitude'),ST_Y(Locationgeo.shape).label('latitude')).filter(Locationgeo.userid==c_u.id)
+      
+      page=jj["page"]
+      total_pages=0
+      ROWS_PER_PAGE=5
 
+      dbSession = Session()  
+      obj_count=0
+      if(jj["search"]==""):
+         obj_count = dbSession.query(Locationgeo.userid).filter(Locationgeo.userid==c_u.id).count()
+      else: 
+         obj_count = dbSession.query(Locationgeo.userid).filter(Locationgeo.userid==c_u.id,Locationgeo.name.ilike(jj["search"]+'%')).count()
+      
+      if(obj_count < ROWS_PER_PAGE):
+         total_pages=1
+      else:
+         total_pages=int(obj_count/ROWS_PER_PAGE)
+         if((obj_count % ROWS_PER_PAGE) != 0):
+            total_pages=1+total_pages
+
+      if(page > total_pages):
+         page=total_pages
+      if(page < 1):
+         page=1
+
+      offset=(page-1)*ROWS_PER_PAGE
+      loc_objects = None
+      if(jj["search"]==""):
+         loc_objects = dbSession.query(Locationgeo.objectid,Locationgeo.userid,Locationgeo.name,ST_X(Locationgeo.shape).label('longitude'),ST_Y(Locationgeo.shape).label('latitude')).filter(Locationgeo.userid==c_u.id).offset(offset).limit(ROWS_PER_PAGE)
+      else:
+         loc_objects = dbSession.query(Locationgeo.objectid,Locationgeo.userid,Locationgeo.name,ST_X(Locationgeo.shape).label('longitude'),ST_Y(Locationgeo.shape).label('latitude')).filter(Locationgeo.userid==c_u.id,Locationgeo.name.ilike(jj["search"]+'%')).offset(offset).limit(ROWS_PER_PAGE)
       schema = UserLocationSchema(many=True)
       locations = schema.dump(loc_objects)
 
       dbSession.close()
-      return jsonify(locations)
-   except:
-      return jsonify({"success":False,"Message":"error occured"})
+      return jsonify({"pages":total_pages,"list":locations})
+   #except:
+      #return jsonify({"success":False,"Message":"error occured"})
 
 @app.route('/deleteloc',  methods=['POST'])
 @login_required
