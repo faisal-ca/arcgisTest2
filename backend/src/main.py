@@ -83,7 +83,7 @@ def get_locations():
 @app.route('/viewuserloc',  methods=['POST'])
 @login_required
 def get_locationsUser():
-   #try:
+   try:
       
       jj=request.get_json()
       userviewValidate=userviewloc_check(jj)
@@ -97,9 +97,9 @@ def get_locationsUser():
       dbSession = Session()  
       obj_count=0
       if(jj["search"]==""):
-         obj_count = dbSession.query(Locationgeo.userid).filter(Locationgeo.userid==c_u.id).count()
+         obj_count = dbSession.query(Locationgeo.userid).count()
       else: 
-         obj_count = dbSession.query(Locationgeo.userid).filter(Locationgeo.userid==c_u.id,Locationgeo.name.ilike(jj["search"]+'%')).count()
+         obj_count = dbSession.query(Locationgeo.userid).filter(Locationgeo.name.ilike(jj["search"]+'%')).count()
       
       if(obj_count < ROWS_PER_PAGE):
          total_pages=1
@@ -116,16 +116,16 @@ def get_locationsUser():
       offset=(page-1)*ROWS_PER_PAGE
       loc_objects = None
       if(jj["search"]==""):
-         loc_objects = dbSession.query(Locationgeo.objectid,Locationgeo.userid,Locationgeo.name,ST_X(Locationgeo.shape).label('longitude'),ST_Y(Locationgeo.shape).label('latitude')).filter(Locationgeo.userid==c_u.id).offset(offset).limit(ROWS_PER_PAGE)
+         loc_objects = dbSession.query(Locationgeo.objectid,Locationgeo.userid,Locationgeo.name,ST_X(Locationgeo.shape).label('longitude'),ST_Y(Locationgeo.shape).label('latitude')).offset(offset).limit(ROWS_PER_PAGE)
       else:
-         loc_objects = dbSession.query(Locationgeo.objectid,Locationgeo.userid,Locationgeo.name,ST_X(Locationgeo.shape).label('longitude'),ST_Y(Locationgeo.shape).label('latitude')).filter(Locationgeo.userid==c_u.id,Locationgeo.name.ilike(jj["search"]+'%')).offset(offset).limit(ROWS_PER_PAGE)
+         loc_objects = dbSession.query(Locationgeo.objectid,Locationgeo.userid,Locationgeo.name,ST_X(Locationgeo.shape).label('longitude'),ST_Y(Locationgeo.shape).label('latitude')).filter(Locationgeo.name.ilike(jj["search"]+'%')).offset(offset).limit(ROWS_PER_PAGE)
       schema = UserLocationSchema(many=True)
       locations = schema.dump(loc_objects)
 
       dbSession.close()
       return jsonify({"pages":total_pages,"list":locations})
-   #except:
-      #return jsonify({"success":False,"Message":"error occured"})
+   except:
+      return jsonify({"success":False,"Message":"error occured"})
 
 @app.route('/deleteloc',  methods=['POST'])
 @login_required
