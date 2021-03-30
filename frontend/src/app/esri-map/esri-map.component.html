@@ -1,52 +1,140 @@
-
 <style>
-    :host {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-      font-size: 14px;
-      color: #333;
-      box-sizing: border-box;
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
-    }
-  </style>
-  
-  <div id="mapArea" #mapViewNode></div>
+  :host {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+    font-size: 14px;
+    color: #333;
+    box-sizing: border-box;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+</style>
 
-  <div id="editArea" class="editArea-container" #expandView>
-    <div id="addFeatureDiv">
-      <h3 class="list-heading">Add location</h3>
-      <ul style="font-size: 13px; padding-left: 1.5em;">
-        <li>Click Add location button</li>
-        <li>Click on the map to add location</li>
-      </ul>
-      <input type="button" class="edit-button" value="Add location" id="btnAddFeature" (click)="addClick()">
-      <div id="boundErrorArea">
-        <label class="err">Location is outside indian boundary</label>
-      </div>
+<div id="mapArea" #mapViewNode></div>
+<div id="editArea" class="editArea-container" #expandViewbookmark>
+  <input type="button" class="edit-button" value="Create bookmark" id="btnAddFeature" (click)="bookmarkform()" >
+  <button class="edit-button">
+    <span> List of Bookmark <mat-slide-toggle [(ngModel)]="showBmTable" (click)="bmtableClick()"></mat-slide-toggle></span>
+  </button>
+    
+  <div id="bookmarkUpdateDiv" style="display:none; margin-top: 1em;" #bookmarkUpdateDiv>
+    <h5 class="list-heading">Enter the Name</h5>
+    
+    <div id="attributeArea">
+      <form [formGroup]="bookmarkForm">
+      <label for="inputDescription" >Name:</label>
+      <input  formControlName="bookmarkname" class="inputInfo" type="text" id="inputDescription" placeHolder="Enter description" ><br>
+      <input type="button" class="edit-button" value="Save" id="btnUpdate" >
+      <input type="button" class="edit-button" value="Close" id="btnDelete" (click)="close()" >
+      </form>
     </div>
-  
-    <div id="updateInstructionDiv" style="text-align:center" #updateInstructionDiv>
-      <p class="or-wrap"><span class="or-text">Or</span></p>
-      <p>Select a location to edit or delete.</p>
+  </div>
+  </div>
+<div id="editArea" class="editArea-container" #expandView>
+  <div id="addFeatureDiv">
+    <h3 class="list-heading">Add location</h3>
+    <ul style="font-size: 13px; padding-left: 1.5em;">
+      <li>Click Add location button</li>
+      <li>Click on the map to add location</li>
+    </ul>
+    <input type="button" class="edit-button" value="Add location" id="btnAddFeature" (click)="addClick()">
+    <div id="boundErrorArea">
+      <label class="err">Location is outside indian boundary</label>
     </div>
-  
-    <div id="featureUpdateDiv" style="display:none; margin-top: 1em;" #featureUpdateDiv>
-      <h5 class="list-heading">Enter the location information</h5>
+  </div>
+
+  <div id="updateInstructionDiv" style="text-align:center" #updateInstructionDiv>
+    <p class="or-wrap"><span class="or-text">Or</span></p>
+    <p>Select a location to edit or delete.</p>
+  </div>
+
+  <div id="featureUpdateDiv" style="display:none; margin-top: 1em;" #featureUpdateDiv>
+    <h5 class="list-heading">Enter the location information</h5>
+    
+    <div id="attributeArea">
+      <form [formGroup]="userForm">
+      <label for="inputDescription" >Name:</label>
+      <input  formControlName="name" class="inputInfo" type="text" id="inputDescription" placeHolder="Enter description" ><br>
       
-      <div id="attributeArea">
-        <form [formGroup]="userForm">
-        <label for="inputDescription" >Name:</label>
-        <input  formControlName="name" class="inputInfo" type="text" id="inputDescription" placeHolder="Enter description" ><br>
-        
-        <input type="button" class="edit-button" value="Update location info" id="btnUpdate" (click)="updateClick()">
-        </form>
-      </div>
-  
-      <div id="deleteArea">
-        <input type="button" class="edit-button" value="Delete location" id="btnDelete" (click)="deleteClick()">
-      </div>
-      <div id="invalidID">
-        <label class="err" *ngIf="invalidUserIdFlag">Invalid User</label>
-      </div>
+      <input type="button" class="edit-button" value="Update location info" id="btnUpdate" (click)="updateClick()">
+      </form>
     </div>
+
+    <div id="deleteArea">
+      <input type="button" class="edit-button" value="Delete location" id="btnDelete" (click)="deleteClick()">
+    </div>
+    <div id="invalidID">
+      <label class="err" *ngIf="invalidUserIdFlag">Invalid User</label>
+    </div>
+
+  </div>
+
+  
+</div>
+
+
+<div class="wf">
+  <div id="tableDiv" class="div1" *ngIf="showBmTable">
+   <!-- <mat-form-field>
+      <mat-label>Filter</mat-label>
+      <input matInput (keyup)="applyFilter($event)" placeholder="search" #input>
+    </mat-form-field>-->
+      <table mat-table [dataSource]="dataSource" class="mat-elevation-z8" >
+
+      <!--- Note that these columns can be defined in any order.
+            The actual rendered columns are set as a property on the row definition" -->
+    
+      <!-- Position Column -->
+      <ng-container matColumnDef="Id">
+        <th mat-header-cell *matHeaderCellDef> ID </th>
+        <td mat-cell *matCellDef="let element"> {{element.Id}} </td>
+      </ng-container>
+    
+      <!-- Name Column -->
+      <ng-container matColumnDef="name" ng-repeat="element in List">
+        <th mat-header-cell *matHeaderCellDef> Name </th>
+        <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="Xmin" ng-repeat="element in List">
+        <th mat-header-cell *matHeaderCellDef> Xmin </th>
+        <td mat-cell *matCellDef="let element"> {{element.Xmin}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="Ymin" ng-repeat="element in List">
+        <th mat-header-cell *matHeaderCellDef> Ymin </th>
+        <td mat-cell *matCellDef="let element"> {{element.Ymin}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="Xmax" ng-repeat="element in List">
+        <th mat-header-cell *matHeaderCellDef> Xmax </th>
+        <td mat-cell *matCellDef="let element"> {{element.Xmax}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="Ymax" ng-repeat="element in List">
+        <th mat-header-cell *matHeaderCellDef> Ymax </th>
+        <td mat-cell *matCellDef="let element"> {{element.Ymax}} </td>
+      </ng-container>
+    
+      <!-- Weight Column -->
+      
+
+      <ng-container matColumnDef="zoom">
+        <th mat-header-cell *matHeaderCellDef> Zoom </th>
+        <td mat-cell *matCellDef="let element"> <img src="./assets/images/zoom.png" class="imgZoom" (click)="zoomBookmark(element)"/>  </td>
+      </ng-container>
+
+      <ng-container matColumnDef="Edit">
+        <th mat-header-cell *matHeaderCellDef> Edit </th>
+        <td mat-cell *matCellDef="let element"> <img src="./assets/images/edit.png" class="imgZoom" (click)="editBookmark(element)"/>  </td>
+      </ng-container>
+
+      <ng-container matColumnDef="Delete">
+        <th mat-header-cell *matHeaderCellDef> Delete </th>
+        <td mat-cell *matCellDef="let element"> <img src="./assets/images/delete.png" class="imgZoom" (click)="deleteBookmark(element)"/>  </td>
+      </ng-container>
+    
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+    <mat-paginator class="pagnacolor" [pageSizeOptions]="[5]" showFirstLastButtons></mat-paginator>
   </div>

@@ -95,6 +95,70 @@ export class AuthService implements  CanActivate{
       return this.http.post(`${this.API_URL}/user_info`, body, {headers: head, observe: 'response'})
               .pipe(catchError(this.erroHandler));
     }
+
+    AddBookmark(data:any): Observable<any> {
+      const head = new HttpHeaders({ 'content-type': 'application/json'} ); 
+      const body=JSON.stringify(data);
+      const httpOptions = {
+        
+        headers: head,
+        observe: 'response'
+      };
+      return this.http.post(`${this.API_URL}/addBookmark`, body, {headers: head, observe: 'response'})
+              .pipe(catchError(this.erroHandler));
+    }
+
+    UpdateBookmark(id:any,data:any): Observable<any> {
+      const head = new HttpHeaders({ 'content-type': 'application/json'} ); 
+      const body=JSON.stringify(data);
+      const httpOptions = {
+        
+        headers: head,
+        observe: 'response'
+      };
+      return this.http.post(`${this.API_URL}/updatebookmark` +id , body, {headers: head, observe: 'response'})
+              .pipe(catchError(this.erroHandler));
+    }
+
+    DeleteBookmark(id:any): Observable<any> {
+      const head = new HttpHeaders({ 'content-type': 'application/json'} ); 
+      const body=JSON.stringify(id);
+      const httpOptions = {
+        
+        headers: head,
+        observe: 'response'
+      };
+      return this.http.post(`${this.API_URL}/deletebm` +id , {headers: head, observe: 'response'})
+              .pipe(catchError(this.erroHandler));
+    }
+
+    BookMarkList(data:any): Observable<any> {
+      const head = new HttpHeaders({ 'content-type': 'application/json'} ); 
+      const body=JSON.stringify(data);
+      const httpOptions = {
+        
+        headers: head,
+        observe: 'response'
+      };
+      return this.http.post(`${this.API_URL}/bookmarklist` , body , {headers: head, observe: 'response'})
+              .pipe(catchError(this.erroHandler));
+    }
+
+    /*reloadBMlist():any{
+      return this.BookMarkList().subscribe((data:any)=>{
+        if(data.body)
+        {
+          if(AuthService.dataSource){
+            AuthService.dataSource.data=data.body;
+          }
+          else{
+            AuthService.dataSource=new MatTableDataSource(data.body);
+          }
+          
+        }
+      });
+    }*/
+
     locationList(): Observable<any> {
       const head = new HttpHeaders({ 'content-type': 'application/json'} ); 
       const body="";

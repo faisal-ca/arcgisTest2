@@ -30,21 +30,31 @@ export class EsriMapComponent implements OnInit {
   private expand:any=null;
   private firstFlag:boolean=true;
   private mainFeatureLayer:any=null;
+  private new_ext:any=null;;
   outsideBoundFlag:Boolean=false;
   user_id:any=-1;
+
+  displayedColumns: string[] = ['name','zoom','Edit','Delete'];
+  dataSource:any = [];
   userForm = new FormGroup({
     name: new FormControl('', [Validators.required, Validators.maxLength(10)])
+}); 
+bookmarkForm = new FormGroup({
+  bookmarkname: new FormControl('', [Validators.required, Validators.maxLength(10)])
 }); 
   @ViewChild('mapViewNode', { static: true }) private mapViewEl!: ElementRef; // needed to inject the MapView into the DOM
   title = 'ng-cli';
   @ViewChild('expandView', { static: true }) private xView!: ElementRef;
+  @ViewChild('expandViewbookmark', { static: true }) private bmView!: ElementRef;
   editArea :any=null
   updateInstructionDiv :any =null;
   attributeEditing :any=null;
   inputDescription:string="hello";
   inputUserInfo:any="";
   invalidUserIdFlag: boolean=false;
-  constructor(private httpS:AuthService,private homeAuthService:HomeAuthService) {}
+  showBmTable:boolean=false;
+  toggle:boolean=false;
+  constructor(private httpS:AuthService,private homeAuthService:HomeAuthService,private authService:AuthService) {}
 
   ngAfterViewInit(){
     //this.mapService.panToWonder([77.036390, 0.047049]);
@@ -54,8 +64,7 @@ export class EsriMapComponent implements OnInit {
 
   public ngOnInit() {
     try{
-
-    
+  
     this.initializeMap().then(() => {
       // The map has been initialized
       
@@ -71,6 +80,7 @@ export class EsriMapComponent implements OnInit {
           this.user_id=data.body.data.id;
           this.hideElements();
         }
+        
         this.homeAuthService.setView(this.view);
       });
 
@@ -112,7 +122,8 @@ export class EsriMapComponent implements OnInit {
           "esri/layers/Layer",
           "esri/layers/FeatureLayer",
           "esri/widgets/Home",
-          "esri/widgets/Popup"
+          "esri/widgets/Popup",
+          
           
           
 
@@ -120,6 +131,7 @@ export class EsriMapComponent implements OnInit {
 
         const container = this.mapViewEl.nativeElement;
         const cont2=this.xView.nativeElement;
+        const cont3 =this.bmView.nativeElement;
 
         this.editArea = document.getElementById("editArea");
         this.updateInstructionDiv = document.getElementById("updateInstructionDiv");
@@ -176,6 +188,12 @@ export class EsriMapComponent implements OnInit {
   
         const view = new MapView(mapViewProperties);
         
+        var expandbm = new Expand({
+          view,
+          content: cont3,
+          expanded: true,
+        });
+        view.ui.add(expandbm, "top-left");
 
         this.expand = new Expand({
           view,
@@ -209,6 +227,51 @@ export class EsriMapComponent implements OnInit {
         return null;
       }
   }
+
+  bookmarkform(){
+    document.getElementById('bookmarkUpdateDiv')!.style.display="block";
+  }
+
+  close(){
+    this.bookmarkForm.setValue({bookmarkname:"" });
+    
+      document.getElementById('bookmarkUpdateDiv')!.style.display="none";
+    }
+
+  bmtableClick(){ 
+    var bmid= {"id":this.user_id}
+    this.authService.BookMarkList(bmid).subscribe(async (data:any)=>{
+    if(!this.toggle)
+      {
+        this.toggle=true;
+        //await this.authService.reloadDatasource();
+          this.dataSource=data.body;
+      }
+      else{
+        this.toggle=false;
+      }
+      });  
+  }
+
+  createBookmark(data:any)
+  {
+
+  }
+
+  zoomBookmark(data:any)
+  {
+
+  }
+  editBookmark(data:any)
+  {
+
+  }
+
+  deleteBookmark(id:any)
+  {
+    
+  }
+
 
   hideElements(){
     var query = this.featureLayer.createQuery();

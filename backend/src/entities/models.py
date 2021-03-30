@@ -72,8 +72,6 @@ class Bookmark(Base):
         self.Ymin = Ymin
         self.Ymax = Ymax
         self.Id=Id
-
-        
 class LocationSchema(Schema):
     ID = fields.Number()
     userid = fields.Number()
@@ -91,3 +89,11 @@ class UserLocationSchema(Schema):
     name = fields.Str()
     longitude = fields.Number()
     latitude = fields.Number() 
+class bookmarkSchema(Schema):
+    Id = fields.Number()
+    Uid = fields.Number()
+    name = fields.Str()
+    Xmin = fields.Float()
+    Xmax = fields.Float()
+    Ymin = fields.Float()
+    Ymax = fields.Float()

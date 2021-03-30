@@ -69,3 +69,25 @@ input:valid {
 .err{
   color: red;
 }
+
+table {
+  width: 50%;
+}
+
+th, td { 
+  text-align: left; 
+  padding: 8px; 
+} 
+th{
+  background-color:#6BB8EF;
+}
+tr:nth-child(even) { 
+  background-color: #acd3f0; 
+}
+tr:nth-child(odd) { 
+  background-color: #DCE7EF; 
+}
+.imgZoom{
+  width: 30px;
+  height: 30px;
+}
