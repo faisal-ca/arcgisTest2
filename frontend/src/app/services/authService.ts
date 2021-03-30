@@ -109,6 +109,40 @@ export class AuthService implements  CanActivate{
       return this.http.post(`${this.API_URL}/viewuserloc`, body, {headers: head, observe: 'response'})
               .pipe(catchError(this.erroHandler));
     }
+    forgotPassword(username:string): Observable<any> {
+      const head = new HttpHeaders({ 'content-type': 'application/json'} ); 
+      const body={"username":username};
+      const httpOptions = {
+        
+        headers: head,
+        observe: 'response'
+      };
+      return this.http.post(`${this.API_URL}/forgot`, body, {headers: head, observe: 'response'})
+              .pipe(catchError(this.erroHandler));
+    }
+
+    checkPasskey(username:string,passkey:string): Observable<any> {
+      const head = new HttpHeaders({ 'content-type': 'application/json'} ); 
+      const body={"username":username,"passwordkey":parseInt(passkey)};
+      const httpOptions = {
+        
+        headers: head,
+        observe: 'response'
+      };
+      return this.http.post(`${this.API_URL}/passkeycheck`, body, {headers: head, observe: 'response'})
+              .pipe(catchError(this.erroHandler));
+    }
+    resetPassword(username:string,password:string): Observable<any> {
+      const head = new HttpHeaders({ 'content-type': 'application/json'} ); 
+      const body={"username":username,"password":password};
+      const httpOptions = {
+        
+        headers: head,
+        observe: 'response'
+      };
+      return this.http.post(`${this.API_URL}/resetpass`, body, {headers: head, observe: 'response'})
+              .pipe(catchError(this.erroHandler));
+    }
 
     reloadDatasource(search:string):any{
       return this.locationList(search).subscribe((data:any)=>{

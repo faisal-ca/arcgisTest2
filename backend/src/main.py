@@ -1,4 +1,5 @@
 import json,copy
+from random import randint
 from flask import Flask, jsonify, request,session,redirect,url_for,current_app
 from .entities.models import Locationgeo,User
 from .entities.models import LocationSchema,UserSchema,UserLocationSchema
@@ -32,12 +33,11 @@ login_manager.login_view = 'login'
 
 mail= Mail(app)
 
-app.config['MAIL_SERVER']='smtp.gmail.com'
-app.config['MAIL_PORT'] = 465
-app.config['MAIL_USERNAME'] = 'yourId@gmail.com'
-app.config['MAIL_PASSWORD'] = '*****'
-app.config['MAIL_USE_TLS'] = False
-app.config['MAIL_USE_SSL'] = True
+app.config['MAIL_SERVER']='smtp.office365.com'
+app.config['MAIL_PORT'] = 587
+app.config['MAIL_USERNAME'] = 'faisal.ca@nestgroup.net'
+app.config['MAIL_PASSWORD'] = ''
+app.config['MAIL_USE_TLS'] = True
 mail = Mail(app)
 
 def login_required(func):
@@ -296,9 +296,87 @@ def user_idinfo():
                "userid": -1}
    return jsonify(**resp)
 
+@app.route('/forgot',  methods=['POST'])
+def forgotPassword():
+   try:
+      rj=request.get_json()
+      # signupValidate=signup_check(rj)
+      # if signupValidate is not None:
+      #    return jsonify({"success":False,"Message":"Json exception","user":"","username":False})
+      dbSession = Session() 
+      user_objects = dbSession.query(User).filter(User.username==rj["username"]).first()
+      if (user_objects == None or user_objects.email==""):
+         dbSession.close()
+         return jsonify({"success":False,"Message":"Username does not excist"})
+      rand_num = random_with_N_digits(6)
+      cu_email=user_objects.email
+      user_objects.passwordkey=rand_num
+      dbSession.commit()
+      dbSession.close()
+
+      msg = Message('Password reset', sender = 'faisal.ca@nestgroup.net', recipients = [cu_email])
+      msg.body = "Your password reset key is : "+ str(rand_num)
+      mail.send(msg)
+      return jsonify({"success":True,"Message":"Email sent succesfully"})
+
+   except:
+      return jsonify({"success":False,"Message":"error occured"})
+
+@app.route('/passkeycheck',  methods=['POST'])
+def passkey():
+   try:
+      rj=request.get_json()
+      # loginValidate=login_check(rj)
+      # if loginValidate is not None:
+      #    return jsonify({"success":False,"Message":"Json exception","user":"","logged":False})
+      dbSession = Session()
+      user_objects = dbSession.query(User).filter(User.username==rj["username"], User.passwordkey==rj["passwordkey"]).first()
+      if (user_objects != None):
+         schema = UserSchema(many=False)
+         userDetails = schema.dump(user_objects)
+         result={"success":True,"Message":"Username found","user":userDetails}
+         dbSession.close()
+         return jsonify(result)
+      else:
+         result={"success":False,"Message":"Incorrect OTP","user":""}
+         dbSession.close()
+         return jsonify(result)
+   except:
+      return jsonify({"success":False,"Message":"error occured"})
+
+@app.route('/resetpass',  methods=['POST'])
+def resetPass():
+   try:
+      rj=request.get_json()
+      # signupValidate=signup_check(rj)
+      # if signupValidate is not None:
+      #    return jsonify({"success":False,"Message":"Json exception","user":"","username":False})
+      dbSession = Session() 
+      user_objects = dbSession.query(User).filter(User.username==rj["username"]).first()
+      if (user_objects.email == None or user_objects.email==""):
+         dbSession.close()
+         return jsonify({"success":False,"Message":"username does not excist"})
+      
+      user_objects.password=rj["password"]
+      dbSession.commit()
+      dbSession.close()
+
+      return jsonify({"success":True,"Message":"Password changed succesfully"})
+
+   except:
+      return jsonify({"success":False,"Message":"error occured","username":False})
+
 @app.route('/')
 def hi_world():
+   msg = Message('Hello', sender = 'faisal.ca@nestgroup.net', recipients = ['praveen.roy@nestgroup.net'])
+   msg.body = "Hello Flask message sent from Flask-Mail"
+   mail.send(msg)
    return 'Hi'
+
+def random_with_N_digits(n):
+    range_start = 10**(n-1)
+    range_end = (10**n)-1
+    return randint(range_start, range_end)
 
 if __name__ == '__main__':
    app.run(debug = True)
