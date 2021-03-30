@@ -1,52 +1,74 @@
-
 <style>
-    :host {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-      font-size: 14px;
-      color: #333;
-      box-sizing: border-box;
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
-    }
-  </style>
-  
-  <div id="mapArea" #mapViewNode></div>
+  :host {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+    font-size: 14px;
+    color: #333;
+    box-sizing: border-box;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+</style>
 
-  <div id="editArea" class="editArea-container" #expandView>
-    <div id="addFeatureDiv">
-      <h3 class="list-heading">Add location</h3>
-      <ul style="font-size: 13px; padding-left: 1.5em;">
-        <li>Click Add location button</li>
-        <li>Click on the map to add location</li>
-      </ul>
-      <input type="button" class="edit-button" value="Add location" id="btnAddFeature" (click)="addClick()">
-      <div id="boundErrorArea">
-        <label class="err">Location is outside indian boundary</label>
-      </div>
-    </div>
+<div id="mapArea" #mapViewNode></div>
+<div id="editArea" class="editArea-container" #expandViewbookmark>
+<input type="button" class="edit-button" value="Create bookmark" id="btnAddFeature" (click)="bookmarkform()">
+<input type="button" class="edit-button" value="View" id="btnAddFeature" (click)="zoomtoexten()">
+<div id="bookmarkUpdateDiv" style="display:none; margin-top: 1em;" #bookmarkUpdateDiv>
+  <h5 class="list-heading">Enter the Name</h5>
   
-    <div id="updateInstructionDiv" style="text-align:center" #updateInstructionDiv>
-      <p class="or-wrap"><span class="or-text">Or</span></p>
-      <p>Select a location to edit or delete.</p>
-    </div>
+  <div id="attributeArea">
+    <form [formGroup]="bookmarkForm">
+    <label for="inputDescription" >Name:</label>
+    <input  formControlName="bookmarkname" class="inputInfo" type="text" id="inputDescription" placeHolder="Enter description" ><br>
+    
+    <input type="button" class="edit-button" value="Save" id="btnUpdate" (click)="extenttest()">
+    <input type="button" class="edit-button" value="Close" id="btnDelete" (click)="close()">
+    </form>
+  </div>
+
   
-    <div id="featureUpdateDiv" style="display:none; margin-top: 1em;" #featureUpdateDiv>
-      <h5 class="list-heading">Enter the location information</h5>
-      
-      <div id="attributeArea">
-        <form [formGroup]="userForm">
-        <label for="inputDescription" >Name:</label>
-        <input  formControlName="name" class="inputInfo" type="text" id="inputDescription" placeHolder="Enter description" ><br>
-        
-        <input type="button" class="edit-button" value="Update location info" id="btnUpdate" (click)="updateClick()">
-        </form>
-      </div>
-  
-      <div id="deleteArea">
-        <input type="button" class="edit-button" value="Delete location" id="btnDelete" (click)="deleteClick()">
-      </div>
-      <div id="invalidID">
-        <label class="err" *ngIf="invalidUserIdFlag">Invalid User</label>
-      </div>
+    
+ 
+ 
+</div>
+</div>
+<div id="editArea" class="editArea-container" #expandView>
+  <div id="addFeatureDiv">
+    <h3 class="list-heading">Add location</h3>
+    <ul style="font-size: 13px; padding-left: 1.5em;">
+      <li>Click Add location button</li>
+      <li>Click on the map to add location</li>
+    </ul>
+    <input type="button" class="edit-button" value="Add location" id="btnAddFeature" (click)="addClick()">
+   
+    <div id="boundErrorArea">
+      <label class="err">Location is outside indian boundary</label>
     </div>
   </div>
+
+  <div id="updateInstructionDiv" style="text-align:center" #updateInstructionDiv>
+    <p class="or-wrap"><span class="or-text">Or</span></p>
+    <p>Select a location to edit or delete.</p>
+  </div>
+
+  <div id="featureUpdateDiv" style="display:none; margin-top: 1em;" #featureUpdateDiv>
+    <h5 class="list-heading">Enter the location information</h5>
+    
+    <div id="attributeArea">
+      <form [formGroup]="userForm">
+      <label for="inputDescription" >Name:</label>
+      <input  formControlName="name" class="inputInfo" type="text" id="inputDescription" placeHolder="Enter description" ><br>
+      
+      <input type="button" class="edit-button" value="Update location info" id="btnUpdate" (click)="updateClick()">
+      </form>
+    </div>
+
+    <div id="deleteArea">
+      <input type="button" class="edit-button" value="Delete location" id="btnDelete" (click)="deleteClick()">
+    </div>
+    <div id="invalidID">
+      <label class="err" *ngIf="invalidUserIdFlag">Invalid User</label>
+    </div>
+  </div>
+ 
+</div>

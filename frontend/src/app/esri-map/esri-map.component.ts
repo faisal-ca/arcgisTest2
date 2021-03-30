@@ -32,19 +32,28 @@ export class EsriMapComponent implements OnInit {
   private mainFeatureLayer:any=null;
   outsideBoundFlag:Boolean=false;
   user_id:any=-1;
+  xmin:any;
+  xmax:any;
+  ymin:any;
+  ymax:any;
+  new_extent:any;
+  bookmarkForm = new FormGroup({
+  bookmarkname: new FormControl('', [Validators.required, Validators.maxLength(10)])
+}); 
   userForm = new FormGroup({
     name: new FormControl('', [Validators.required, Validators.maxLength(10)])
 }); 
   @ViewChild('mapViewNode', { static: true }) private mapViewEl!: ElementRef; // needed to inject the MapView into the DOM
   title = 'ng-cli';
   @ViewChild('expandView', { static: true }) private xView!: ElementRef;
+  @ViewChild('expandViewbookmark', { static: true }) private bmView!: ElementRef;
   editArea :any=null
   updateInstructionDiv :any =null;
   attributeEditing :any=null;
   inputDescription:string="hello";
   inputUserInfo:any="";
   invalidUserIdFlag: boolean=false;
-  constructor(private httpS:AuthService,private homeAuthService:HomeAuthService) {}
+  constructor(private httpS:AuthService,private homeAuthService:HomeAuthService,private auth:AuthService) {}
 
   ngAfterViewInit(){
     //this.mapService.panToWonder([77.036390, 0.047049]);
@@ -120,6 +129,7 @@ export class EsriMapComponent implements OnInit {
 
         const container = this.mapViewEl.nativeElement;
         const cont2=this.xView.nativeElement;
+        const cont3 =this.bmView.nativeElement;
 
         this.editArea = document.getElementById("editArea");
         this.updateInstructionDiv = document.getElementById("updateInstructionDiv");
@@ -186,6 +196,12 @@ export class EsriMapComponent implements OnInit {
         // Add the widget to the top-right corner of the view
         view.ui.add(this.expand, 'top-right');
 
+        var expandbm = new Expand({
+          view,
+          content: cont3,
+          expanded: true,
+        });
+        view.ui.add(expandbm, "top-left");
         var homeBtn = new Home({
           view
         });
@@ -209,6 +225,47 @@ export class EsriMapComponent implements OnInit {
         return null;
       }
   }
+
+  bookmarkform(){
+    document.getElementById('bookmarkUpdateDiv')!.style.display="block";
+  }
+   extenttest() {
+      
+  var bm= {"name": this.bookmarkForm.value.bookmarkname, "Xmin": this.view.extent.xmin.toFixed(2),"Ymin":this.view.extent.ymin.toFixed(2),"Xmax":this.view.extent.xmax.toFixed(2),"Ymax":this.view.extent.ymax.toFixed(2)}
+  debugger;
+  this.auth.addBookmark(bm).subscribe((data:any)=>{
+    debugger;
+    if(data)
+    {
+      alert("added")
+    }
+    debugger;
+  })
+  alert("Location Added Successfully");
+   
+  
+  }
+  close(){
+  this.bookmarkForm.setValue({bookmarkname:"" });
+  
+    document.getElementById('bookmarkUpdateDiv')!.style.display="none";
+  }
+  async zoomtoexten()
+  {
+    const [Extent]=await loadModules([ "esri/geometry/Extent"]);
+    debugger;
+    this.new_extent= new Extent({
+      xmin: this.view.extent.xmin.toFixed(2), 
+      ymin: this.view.extent.ymin.toFixed(2), 
+      xmax: this.view.extent.xmax.toFixed(2), 
+      ymax: this.view.extent.ymax.toFixed(2),
+      spatialReference: this.view.extent.spatialReference
+     });
+    this.view.goTo(this.new_extent);
+      
+    
+  }
+  
 
   hideElements(){
     var query = this.featureLayer.createQuery();
