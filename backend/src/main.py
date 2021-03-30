@@ -68,8 +68,6 @@ def get_locations():
       # fetching from the database
       dbSession = Session()
       exam_objects = dbSession.query(Locationgeo.objectid,Locationgeo.userid,Locationgeo.name,ST_X(Locationgeo.shape).label('longitude'),ST_Y(Locationgeo.shape).label('latitude')).all()
-
-      
       # transforming into JSON-serializable objects
       schema = LocationSchema(many=True)
       locations = schema.dump(exam_objects)
@@ -81,7 +79,7 @@ def get_locations():
       return jsonify({"success":False,"Message":"error occured"})
 
 @app.route('/viewuserloc',  methods=['POST'])
-@login_required
+#@login_required
 def get_locationsUser():
    try:
       '''
@@ -90,9 +88,12 @@ def get_locationsUser():
       if userviewValidate is not None:
          return jsonify({"success":False,"Message":"Json exception"})
       '''
+      jj=request.get_json()
+      skip = jj["skip"]
+      take = jj["take"]
       dbSession = Session()
       #loc_objects = dbSession.query(Locationgeo.id,Locationgeo.userid,Locationgeo.name,ST_AsGeoJSON(Locationgeo.location).label('location')).filter(Locationgeo.userid==jj["user_id"])
-      loc_objects = dbSession.query(Locationgeo.objectid,Locationgeo.userid,Locationgeo.name,ST_X(Locationgeo.shape).label('longitude'),ST_Y(Locationgeo.shape).label('latitude')).filter(Locationgeo.userid==c_u.id)
+      loc_objects = dbSession.query(Locationgeo.objectid,Locationgeo.userid,Locationgeo.name,ST_X(Locationgeo.shape).label('longitude'),ST_Y(Locationgeo.shape).label('latitude')).offset(skip).limit(take)
 
       schema = UserLocationSchema(many=True)
       locations = schema.dump(loc_objects)
@@ -101,6 +102,15 @@ def get_locationsUser():
       return jsonify(locations)
    except:
       return jsonify({"success":False,"Message":"error occured"})
+@app.route('/getcount',  methods=['GET'])
+def get_count():
+   try:
+      dbSession = Session()
+      count = dbSession.query(Locationgeo).count()
+      dbSession.close()
+      return jsonify(count)
+   except:
+      return jsonify({"success":False,"Message":"error occured"})      
 
 @app.route('/deleteloc',  methods=['POST'])
 @login_required

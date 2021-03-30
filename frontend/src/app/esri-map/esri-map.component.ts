@@ -44,7 +44,7 @@ export class EsriMapComponent implements OnInit {
   inputDescription:string="hello";
   inputUserInfo:any="";
   invalidUserIdFlag: boolean=false;
-  constructor(private httpS:AuthService,private homeAuthService:HomeAuthService) {}
+  constructor(private httpS:AuthService,private homeAuthService:HomeAuthService,private auth:AuthService) {}
 
   ngAfterViewInit(){
     //this.mapService.panToWonder([77.036390, 0.047049]);
@@ -73,6 +73,7 @@ export class EsriMapComponent implements OnInit {
         }
         this.homeAuthService.setView(this.view);
       });
+      
 
       this.printCount();
       console.log("mapView ready: ", this.view.ready);
@@ -501,7 +502,7 @@ var layerList = new LayerList({
           this.selectFeature(newIncidentId);
         }
 
-        this.httpS.reloadDatasource();
+        // this.httpS.reloadDatasource();
       })
       .catch(function(error:any) {
         console.log("===============================================");

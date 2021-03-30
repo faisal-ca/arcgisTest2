@@ -52,11 +52,19 @@
       
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
         <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-      </table>
-      <mat-paginator class="pagnacolor" [pageSizeOptions]="[5]" showFirstLastButtons></mat-paginator>
+      </table><br>
+      <div style ="float: right;margin-right: 5px;">
+        <button style ="background: #DCE7EF;border-radius:2;" (click)="first()"><<</button>&nbsp;
+        <button style ="background: #DCE7EF;" (click)="previous()"><</button>&nbsp;
+        <button style ="background: #DCE7EF;" (click)="next()">></button>&nbsp;
+        <button style ="background: #DCE7EF;" (click)="last()">>></button>
+      </div>
+      <!-- <mat-paginator class="pagnacolor" [pageSizeOptions]="[5]" showFirstLastButtons></mat-paginator> -->
     </div>
+    
     <div id="mapDiv" class="div2"><app-esri-map></app-esri-map></div>
 </div>
+
 <mat-menu #menu="matMenu">
     <button mat-menu-item>
       <span (click)="tableClick()">List of locations</span>

@@ -14,6 +14,7 @@ import { MatPaginator } from '@angular/material/paginator';
 })
 
 export class AuthService implements  CanActivate{
+  
     private API_URL="http://127.0.0.1:5000";
     static dataSource:any=null;
     constructor(private http: HttpClient,private router:Router) {
@@ -95,9 +96,20 @@ export class AuthService implements  CanActivate{
       return this.http.post(`${this.API_URL}/user_info`, body, {headers: head, observe: 'response'})
               .pipe(catchError(this.erroHandler));
     }
-    locationList(): Observable<any> {
+    tablecount(): Observable<any> {
+      let headers = new HttpHeaders({ 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
+    headers.append('Access-Control-Allow-Origin', 'http://localhost:5000');
+    headers.append('Access-Control-Allow-Credentials', 'true');
+    return this.http.get(this.API_URL + '/getcount', { headers: headers }).pipe(map(data => data))
+    }
+    locationList(currentpage: number): Observable<any> {
+      
+      var pagesize = 5;
+      var skip = (currentpage - 1) * pagesize;
+      
+    
       const head = new HttpHeaders({ 'content-type': 'application/json'} ); 
-      const body="";
+      const body={"skip":skip,"take":pagesize};
       const httpOptions = {
         
         headers: head,
@@ -107,20 +119,20 @@ export class AuthService implements  CanActivate{
               .pipe(catchError(this.erroHandler));
     }
 
-    reloadDatasource():any{
-      return this.locationList().subscribe((data:any)=>{
-        if(data.body)
-        {
-          if(AuthService.dataSource){
-            AuthService.dataSource.data=data.body;
-          }
-          else{
-            AuthService.dataSource=new MatTableDataSource(data.body);
-          }
+    // reloadDatasource():any{
+    //   return this.locationList().subscribe((data:any)=>{
+    //     if(data.body)
+    //     {
+    //       if(AuthService.dataSource){
+    //         AuthService.dataSource.data=data.body;
+    //       }
+    //       else{
+    //         AuthService.dataSource=new MatTableDataSource(data.body);
+    //       }
           
-        }
-      });
-    }
+    //     }
+    //   });
+    // }
     erroHandler(error: HttpErrorResponse | any) {
       return throwError(error.message || 'server Error');
     }

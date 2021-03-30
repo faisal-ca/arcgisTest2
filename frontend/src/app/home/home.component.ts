@@ -22,6 +22,10 @@ export class HomeComponent implements OnInit {
   dataSource:any = [];
   tableExpandedFlag:boolean=false;
   search:any='';
+  currentpage: number = 1;
+  pagesize: number = 5;
+  totalpage:any;
+  rowcount:any;
   constructor(public auth:AuthService,public router:Router, private homeAuth:HomeAuthService) { }
 
   ngOnInit(): void {
@@ -29,6 +33,13 @@ export class HomeComponent implements OnInit {
       this.userName=data.body.data.name;
       this.cu_id=data.body.data.id;
     });
+    this.auth.tablecount().subscribe((data:any)=>{
+      
+      this.rowcount=data;
+      
+      
+    });
+    
   }
   logoutClick()
   {
@@ -52,18 +63,17 @@ export class HomeComponent implements OnInit {
     });
   }
   tableClick(){
-    this.auth.locationList().subscribe(async (data:any)=>{
+    this.auth.locationList(this.currentpage).subscribe((data:any)=>{
       if(data.body && !this.tableExpandedFlag)
       {
+        
         this.tableExpandedFlag=true;
-        await this.auth.reloadDatasource();
-        this.dataSource=AuthService.dataSource;
-        this.dataSource.paginator=this.paginator;
+        // await this.auth.reloadDatasource();
+        this.dataSource=new MatTableDataSource(data.body);
+        //this.dataSource.paginator=this.paginator;
         document.getElementById("mapDiv")!.style.width='70%';
         document.getElementById("tableDiv")!.style.width='30%';
-        
-        
-        
+      
       }
       else{
         document.getElementById("tableDiv")!.style.width='0%';
@@ -72,6 +82,79 @@ export class HomeComponent implements OnInit {
         
       }
     });
+  }
+  first() {
+    debugger;
+    this.auth.locationList(this.currentpage).subscribe((data:any)=>{
+      if(data.body){
+        
+        this.dataSource = new MatTableDataSource(data.body);
+        
+      }
+    
+  });
+    this.currentpage = 1;
+  }
+  previous() {
+    
+    if (this.currentpage > 0) {
+      this.currentpage = this.currentpage - 1;
+      this.auth.locationList(this.currentpage).subscribe((data:any)=>{
+        if(data.body){
+          
+          this.dataSource = new MatTableDataSource(data.body);
+          
+        }
+      
+    });
+    }
+
+  }
+  next() {
+    
+    debugger;
+    this.calcultepages();
+    if (this.currentpage < this.totalpage) {
+
+      this.currentpage = this.currentpage + 1;
+      this.auth.locationList(this.currentpage).subscribe((data:any)=>{
+        if(data.body){
+          
+          this.dataSource = new MatTableDataSource(data.body);
+          
+        }
+      
+    });
+      
+
+    }
+  }
+  last() {
+    debugger;
+    this.calcultepages();
+    if (this.currentpage < this.totalpage) {
+      this.currentpage = this.totalpage;
+      this.auth.locationList(this.currentpage).subscribe((data:any)=>{
+        if(data.body){
+          
+          this.dataSource = new MatTableDataSource(data.body);
+          
+        }
+      
+    });
+    }
+
+  }
+  calcultepages() {
+
+    if (this.rowcount % this.pagesize == 0) {
+      this.totalpage = Math.floor(this.rowcount / this.pagesize);
+
+    }
+    else {
+      this.totalpage = Math.floor((this.rowcount / this.pagesize) + 1);
+    }
+
   }
   decimalChecker(ele:any){
     return (Math.round(ele * 100) / 100).toFixed(2);
