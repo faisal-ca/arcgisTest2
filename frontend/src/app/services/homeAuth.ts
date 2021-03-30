@@ -65,6 +65,7 @@ export class HomeAuthService implements  CanActivate{
     setView(v:any){
       this.view=v;
     }
+    
     panMap(coordinates:any) {
       this.view.goTo(coordinates)
       .then(() => {
