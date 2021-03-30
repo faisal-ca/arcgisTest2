@@ -1,6 +1,6 @@
 import json,copy
 from flask import Flask, jsonify, request,session,redirect,url_for,current_app
-from .entities.models import Locationgeo,User
+from .entities.models import Locationgeo,User,Bookmark
 from .entities.models import LocationSchema,UserSchema,UserLocationSchema
 from .entities.validate import valid_check,login_check,addloc_check,updateloc_check,userviewloc_check,signup_check
 from sqlalchemy.orm import sessionmaker
@@ -258,6 +258,33 @@ def user_idinfo():
                "logged":False,
                "userid": -1}
    return jsonify(**resp)
+
+
+@app.route('/updatebookmark',  methods=['POST'])
+@login_required
+def update_bookmark():
+   try:
+      rj=request.get_json()
+      
+      dbSession = Session()
+      loc_objects = dbSession.query(Bookmark).filter(Bookmark.Id==rj["id"]).first()
+      if (loc_objects != None):
+         loc_objects.name=rj["name"]
+         loc_objects.Xmin=rj["xmin"]
+         loc_objects.Xmax=rj["xmax"]
+         loc_objects.Ymin=rj["ymin"]
+         loc_objects.Ymax=rj["ymax"]
+         
+         dbSession.commit()
+         result={"success":True,"Message":"updated","logged":True}
+         dbSession.close()
+         return jsonify(result)
+      else:
+         result={"success":False,"Message":"ID not found","logged":True}
+         dbSession.close()
+         return jsonify(result)
+   except:
+      return jsonify({"success":False,"Message":"error occured","logged":True})
 
 @app.route('/')
 def hi_world():
