@@ -11,7 +11,7 @@ from geoalchemy2.functions import ST_AsGeoJSON,ST_AsText,ST_Y,ST_X
 from geoalchemy2.elements import WKTElement
 from functools import wraps
 from flask_login.config import COOKIE_NAME, EXEMPT_METHODS
-
+from flask_mail import Mail, Message
 from flask_login import (current_user, LoginManager,
                              login_user, logout_user)
 
@@ -27,6 +27,18 @@ c_u=User()
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
+
+
+
+mail= Mail(app)
+
+app.config['MAIL_SERVER']='smtp.gmail.com'
+app.config['MAIL_PORT'] = 465
+app.config['MAIL_USERNAME'] = 'yourId@gmail.com'
+app.config['MAIL_PASSWORD'] = '*****'
+app.config['MAIL_USE_TLS'] = False
+app.config['MAIL_USE_SSL'] = True
+mail = Mail(app)
 
 def login_required(func):
    @wraps(func)
