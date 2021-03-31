@@ -96,39 +96,37 @@ export class AuthService implements  CanActivate{
               .pipe(catchError(this.erroHandler));
     }
 
-    AddBookmark(data:any): Observable<any> {
+    addbookmark(person:any): Observable<any> {
       const head = new HttpHeaders({ 'content-type': 'application/json'} ); 
-      const body=JSON.stringify(data);
+      const body=JSON.stringify(person);
       const httpOptions = {
         
         headers: head,
         observe: 'response'
       };
-      return this.http.post(`${this.API_URL}/addBookmark`, body, {headers: head, observe: 'response'})
+      return this.http.post(`${this.API_URL}/addbookmark`, body, {headers: head, observe: 'response'})
               .pipe(catchError(this.erroHandler));
     }
-
-    UpdateBookmark(id:any,data:any): Observable<any> {
+    updatebookmark(person:any): Observable<any> {
       const head = new HttpHeaders({ 'content-type': 'application/json'} ); 
-      const body=JSON.stringify(data);
+      const body=JSON.stringify(person);
       const httpOptions = {
         
         headers: head,
         observe: 'response'
       };
-      return this.http.post(`${this.API_URL}/updatebookmark` +id , body, {headers: head, observe: 'response'})
+      return this.http.post(`${this.API_URL}/updatebookmark`, body, {headers: head, observe: 'response'})
               .pipe(catchError(this.erroHandler));
     }
-
-    DeleteBookmark(id:any): Observable<any> {
+   deletebookmark(person:any): Observable<any> {
       const head = new HttpHeaders({ 'content-type': 'application/json'} ); 
-      const body=JSON.stringify(id);
+      const body=JSON.stringify(person);
       const httpOptions = {
         
         headers: head,
         observe: 'response'
       };
-      return this.http.post(`${this.API_URL}/deletebm` +id , {headers: head, observe: 'response'})
+      return this.http.post(`${this.API_URL}/deletebm`, body, {headers: head, observe: 'response'})
               .pipe(catchError(this.erroHandler));
     }
 
@@ -144,20 +142,16 @@ export class AuthService implements  CanActivate{
               .pipe(catchError(this.erroHandler));
     }
 
-    /*reloadBMlist():any{
-      return this.BookMarkList().subscribe((data:any)=>{
+    reloadBMlist(data:any):any{
+
+         this.BookMarkList(data).subscribe((data:any)=>{
         if(data.body)
         {
-          if(AuthService.dataSource){
-            AuthService.dataSource.data=data.body;
-          }
-          else{
-            AuthService.dataSource=new MatTableDataSource(data.body);
-          }
+          return data
           
         }
       });
-    }*/
+    }
 
     locationList(): Observable<any> {
       const head = new HttpHeaders({ 'content-type': 'application/json'} ); 

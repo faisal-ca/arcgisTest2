@@ -30,7 +30,7 @@ export class EsriMapComponent implements OnInit {
   private expand:any=null;
   private firstFlag:boolean=true;
   private mainFeatureLayer:any=null;
-  private new_ext:any=null;;
+  private new_extent:any=null;;
   outsideBoundFlag:Boolean=false;
   user_id:any=-1;
 
@@ -253,24 +253,11 @@ bookmarkForm = new FormGroup({
       });  
   }
 
-  createBookmark(data:any)
-  {
-
-  }
-
-  zoomBookmark(data:any)
-  {
-
-  }
-  editBookmark(data:any)
-  {
-
-  }
-
-  deleteBookmark(data:any)
-  {
-    var bm= data.Id;
-    this.authService.DeleteBookmark(bm).subscribe((data:any)=>{
+  Savebookmark() {
+     
+    var bm= {"Uid":this.user_id,"name": this.bookmarkForm.value.bookmarkname, "Xmin": this.view.extent.xmin,"Ymin":this.view.extent.ymin,"Xmax":this.view.extent.xmax,"Ymax":this.view.extent.ymax}
+    debugger;
+    this.authService.addbookmark(bm).subscribe((data:any)=>{
       debugger;
       if(data.body.logged)
       {
@@ -278,7 +265,54 @@ bookmarkForm = new FormGroup({
       }
       debugger;
     })
+    
+    }
+    Updatebookmark(data:any)
+    {
+      var bm= {"id":data.Id,"name":this.bookmarkForm.value.bookmarkname};
+      this.authService.updatebookmark(bm).subscribe((data:any)=>{
+        debugger;
+        if(data.body.logged)
+        {
+          alert(data.body.Message)
+        }
+        debugger;
+      })
+     
+    }
+    deletebookmark(data:any)
+    {
+      var bm= {"id":data.Id};
+      this.authService.deletebookmark(bm).subscribe((data:any)=>{
+        debugger;
+        if(data.body.logged)
+        {
+          alert(data.body.Message);
+          //this.authService.reloadBMlist(this.user_id);
+
+        }
+        debugger;
+      })
+     
+    }
+    async zoomtoexten(data:any)
+  {
+    const [Extent]=await loadModules([ "esri/geometry/Extent"]);
+    debugger;
+    this.new_extent= new Extent({
+      xmin: data.Xmin, 
+      ymin: data.Ymin, 
+      xmax:data.Xmax, 
+      ymax: data.Ymax,
+      spatialReference: this.view.extent.spatialReference
+     });
+    this.view.goTo(this.new_extent);
+      
+    
   }
+  
+
+  
 
 
   hideElements(){

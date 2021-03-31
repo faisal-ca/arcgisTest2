@@ -306,6 +306,20 @@ def get_bookmark():
    except:
       return jsonify({"success":False,"Message":"error occured"})
 
+@app.route('/addbookmark',  methods=['POST'])
+@login_required      
+def addbookmark():
+   try:
+      rj=request.get_json()
+      dbSession = Session()
+      c1 = Bookmark(Uid=rj["Uid"],name=rj["name"],Xmin=rj["Xmin"],Xmax=rj["Xmax"],Ymin=rj["Ymin"],Ymax=rj["Ymax"])
+      dbSession.add(c1)
+      dbSession.commit()
+      dbSession.close()
+      return jsonify({"success":True,"Message":"Bookmark added succesfully","logged":True})
+   except:
+      return jsonify({"success":False,"Message":"error occured","logged":True})
+
 
 @app.route('/user_id', methods=['POST'])
 def user_idinfo():

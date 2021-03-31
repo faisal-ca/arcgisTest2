@@ -23,7 +23,7 @@
       <form [formGroup]="bookmarkForm">
       <label for="inputDescription" >Name:</label>
       <input  formControlName="bookmarkname" class="inputInfo" type="text" id="inputDescription" placeHolder="Enter description" ><br>
-      <input type="button" class="edit-button" value="Save" id="btnUpdate" >
+      <input type="button" class="edit-button" value="Save" id="btnUpdate" (click)="Savebookmark()"  >
       <input type="button" class="edit-button" value="Close" id="btnDelete" (click)="close()" >
       </form>
     </div>
@@ -120,17 +120,17 @@
 
       <ng-container matColumnDef="zoom">
         <th mat-header-cell *matHeaderCellDef> Zoom </th>
-        <td mat-cell *matCellDef="let element"> <img src="./assets/images/zoom.png" class="imgZoom" (click)="zoomBookmark(element)"/>  </td>
+        <td mat-cell *matCellDef="let element"> <img src="./assets/images/zoom.png" class="imgZoom" (click)="zoomtoexten(element)"/>  </td>
       </ng-container>
 
       <ng-container matColumnDef="Edit">
         <th mat-header-cell *matHeaderCellDef> Edit </th>
-        <td mat-cell *matCellDef="let element"> <img src="./assets/images/edit.png" class="imgZoom" (click)="editBookmark(element)"/>  </td>
+        <td mat-cell *matCellDef="let element"> <img src="./assets/images/edit.png" class="imgZoom" (click)="Updatebookmark(element)"/>  </td>
       </ng-container>
 
       <ng-container matColumnDef="Delete">
         <th mat-header-cell *matHeaderCellDef> Delete </th>
-        <td mat-cell *matCellDef="let element"> <img src="./assets/images/delete.png" class="imgZoom" (click)="deleteBookmark(element)"/>  </td>
+        <td mat-cell *matCellDef="let element"> <img src="./assets/images/delete.png" class="imgZoom" (click)="deletebookmark(element)"/>  </td>
       </ng-container>
     
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
