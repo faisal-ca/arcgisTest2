@@ -1,4 +1,4 @@
-import json,copy
+import json,copy,os
 from random import randint
 from flask import Flask, jsonify, request,session,redirect,url_for,current_app
 from .entities.models import Locationgeo,User
@@ -35,8 +35,8 @@ mail= Mail(app)
 
 app.config['MAIL_SERVER']='smtp.office365.com'
 app.config['MAIL_PORT'] = 587
-app.config['MAIL_USERNAME'] = 'faisal.ca@nestgroup.net'
-app.config['MAIL_PASSWORD'] = ''
+app.config['MAIL_USERNAME'] = os.environ['MAIL_USERNAME'] 
+app.config['MAIL_PASSWORD'] = os.environ['MAIL_PASSWORD']
 app.config['MAIL_USE_TLS'] = True
 mail = Mail(app)
 
@@ -314,7 +314,7 @@ def forgotPassword():
       dbSession.commit()
       dbSession.close()
 
-      msg = Message('Password reset', sender = 'faisal.ca@nestgroup.net', recipients = [cu_email])
+      msg = Message('Password reset', sender = os.environ['MAIL_USERNAME'] , recipients = [cu_email])
       msg.body = "Your password reset key is : "+ str(rand_num)
       mail.send(msg)
       return jsonify({"success":True,"Message":"Email sent succesfully"})
@@ -368,7 +368,7 @@ def resetPass():
 
 @app.route('/')
 def hi_world():
-   msg = Message('Hello', sender = 'faisal.ca@nestgroup.net', recipients = ['praveen.roy@nestgroup.net'])
+   msg = Message('Hello', sender = os.environ['MAIL_USERNAME'] , recipients = ['praveen.roy@nestgroup.net'])
    msg.body = "Hello Flask message sent from Flask-Mail"
    mail.send(msg)
    return 'Hi'
