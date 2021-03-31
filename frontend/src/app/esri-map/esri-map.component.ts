@@ -267,9 +267,17 @@ bookmarkForm = new FormGroup({
 
   }
 
-  deleteBookmark(id:any)
+  deleteBookmark(data:any)
   {
-    
+    var bm= data.Id;
+    this.authService.DeleteBookmark(bm).subscribe((data:any)=>{
+      debugger;
+      if(data.body.logged)
+      {
+        alert(data.body.Message)
+      }
+      debugger;
+    })
   }
 
 
