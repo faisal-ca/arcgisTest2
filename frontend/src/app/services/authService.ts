@@ -121,18 +121,39 @@ export class AuthService implements  CanActivate{
         }
       });
     }
-    addBookmark(data:any): Observable<any> {
-     // const head = new HttpHeaders({ 'content-type': 'application/json'} ); 
-      let head = new HttpHeaders({'Content-Type': 'application/json','Access-Control-Allow-Origin': '*'});
-      head.append('Access-Control-Allow-Origin', 'http://localhost:5000');
-      head.append('Access-Control-Allow-Credentials', 'true');
-      const body=JSON.stringify(data);
+    addbookmark(person:any): Observable<any> {
+      const head = new HttpHeaders({ 'content-type': 'application/json'} ); 
+      const body=JSON.stringify(person);
       const httpOptions = {
         
         headers: head,
         observe: 'response'
       };
-      return this.http.post(`${this.API_URL}/addBookmark`, body, {headers: head, observe: 'response'})
+      return this.http.post(`${this.API_URL}/addbookmark`, body, {headers: head, observe: 'response'})
+              .pipe(catchError(this.erroHandler));
+    }
+
+    updatebookmark(person:any): Observable<any> {
+      const head = new HttpHeaders({ 'content-type': 'application/json'} ); 
+      const body=JSON.stringify(person);
+      const httpOptions = {
+        
+        headers: head,
+        observe: 'response'
+      };
+      return this.http.post(`${this.API_URL}/updatebookmark`, body, {headers: head, observe: 'response'})
+              .pipe(catchError(this.erroHandler));
+    }
+
+   deletebookmark(person:any): Observable<any> {
+      const head = new HttpHeaders({ 'content-type': 'application/json'} ); 
+      const body=JSON.stringify(person);
+      const httpOptions = {
+        
+        headers: head,
+        observe: 'response'
+      };
+      return this.http.post(`${this.API_URL}/deletebookmark`, body, {headers: head, observe: 'response'})
               .pipe(catchError(this.erroHandler));
     }
     

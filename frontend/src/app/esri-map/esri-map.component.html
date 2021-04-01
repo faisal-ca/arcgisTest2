@@ -12,7 +12,7 @@
 <div id="mapArea" #mapViewNode></div>
 <div id="editArea" class="editArea-container" #expandViewbookmark>
 <input type="button" class="edit-button" value="Create bookmark" id="btnAddFeature" (click)="bookmarkform()">
-<input type="button" class="edit-button" value="View" id="btnAddFeature" (click)="zoomtoexten()">
+<input type="button" class="edit-button" value="update bookmark" id="btnAddFeature" (click)="Updatebookmark()">
 <div id="bookmarkUpdateDiv" style="display:none; margin-top: 1em;" #bookmarkUpdateDiv>
   <h5 class="list-heading">Enter the Name</h5>
   
@@ -21,8 +21,10 @@
     <label for="inputDescription" >Name:</label>
     <input  formControlName="bookmarkname" class="inputInfo" type="text" id="inputDescription" placeHolder="Enter description" ><br>
     
-    <input type="button" class="edit-button" value="Save" id="btnUpdate" (click)="extenttest()">
+    <input type="button" class="edit-button" value="Save" id="btnUpdate" (click)=" Savebookmark()">
     <input type="button" class="edit-button" value="Close" id="btnDelete" (click)="close()">
+    <input type="button" class="edit-button" value="update bookmark" id="btnAddFeature" (click)="Updatebookmark()">
+    <input type="button" class="edit-button" value="Delete bookmark" id="btnAddFeature" (click)="deletebookmark()">
     </form>
   </div>
 

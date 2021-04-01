@@ -32,10 +32,10 @@ export class EsriMapComponent implements OnInit {
   private mainFeatureLayer:any=null;
   outsideBoundFlag:Boolean=false;
   user_id:any=-1;
-  xmin:any;
-  xmax:any;
-  ymin:any;
-  ymax:any;
+  Xmin:number=0;
+  Xmax:number=0;
+  Ymin:number=0;
+  Ymax:number=0;
   new_extent:any;
   bookmarkForm = new FormGroup({
   bookmarkname: new FormControl('', [Validators.required, Validators.maxLength(10)])
@@ -229,21 +229,47 @@ export class EsriMapComponent implements OnInit {
   bookmarkform(){
     document.getElementById('bookmarkUpdateDiv')!.style.display="block";
   }
-   extenttest() {
-      
-  var bm= {"name": this.bookmarkForm.value.bookmarkname, "Xmin": this.view.extent.xmin.toFixed(2),"Ymin":this.view.extent.ymin.toFixed(2),"Xmax":this.view.extent.xmax.toFixed(2),"Ymax":this.view.extent.ymax.toFixed(2)}
+   Savebookmark() {
+     
+  var bm= {"Uid":this.user_id,"name": this.bookmarkForm.value.bookmarkname, "Xmin": this.view.extent.xmin,"Ymin":this.view.extent.ymin,"Xmax":this.view.extent.xmax,"Ymax":this.view.extent.ymax}
   debugger;
-  this.auth.addBookmark(bm).subscribe((data:any)=>{
+  this.auth.addbookmark(bm).subscribe((data:any)=>{
     debugger;
-    if(data)
+    if(data.body.logged)
     {
-      alert("added")
+      alert(data.body.Message)
     }
     debugger;
   })
-  alert("Location Added Successfully");
-   
   
+  }
+
+  Updatebookmark()
+  {
+    var bm= {"id":25,"name":this.bookmarkForm.value.bookmarkname};
+    this.auth.updatebookmark(bm).subscribe((data:any)=>{
+      debugger;
+      if(data.body.logged)
+      {
+        alert(data.body.Message)
+      }
+      debugger;
+    })
+   
+  }
+
+  deletebookmark()
+  {
+    var bm= {"id":25};
+    this.auth.deletebookmark(bm).subscribe((data:any)=>{
+      debugger;
+      if(data.body.logged)
+      {
+        alert(data.body.Message)
+      }
+      debugger;
+    })
+   
   }
   close(){
   this.bookmarkForm.setValue({bookmarkname:"" });
