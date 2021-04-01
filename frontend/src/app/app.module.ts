@@ -19,7 +19,8 @@ import { MatInputModule } from '@angular/material/input';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { SignupComponent } from './signup/signup.component';
 import { ProfileComponent } from './profile/profile.component';
-import { WindowComponent } from './window/window.component'
+import { WindowComponent } from './window/window.component';
+import { UsernameComponent } from './passreset/username/username.component'
 
 
 @NgModule({
@@ -30,7 +31,8 @@ import { WindowComponent } from './window/window.component'
     EsriMapComponent,
     SignupComponent,
     ProfileComponent,
-    WindowComponent
+    WindowComponent,
+    UsernameComponent
   ],
   imports: [
     BrowserModule,

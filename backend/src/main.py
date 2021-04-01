@@ -1,4 +1,5 @@
-import json,copy
+import json,copy,os
+from random import randint
 from flask import Flask, jsonify, request,session,redirect,url_for,current_app
 from .entities.models import Locationgeo,User
 from .entities.models import LocationSchema,UserSchema,UserLocationSchema
@@ -11,7 +12,7 @@ from geoalchemy2.functions import ST_AsGeoJSON,ST_AsText,ST_Y,ST_X
 from geoalchemy2.elements import WKTElement
 from functools import wraps
 from flask_login.config import COOKIE_NAME, EXEMPT_METHODS
-
+from flask_mail import Mail, Message
 from flask_login import (current_user, LoginManager,
                              login_user, logout_user)
 
@@ -27,6 +28,17 @@ c_u=User()
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
+
+
+
+mail= Mail(app)
+
+app.config['MAIL_SERVER']='smtp.office365.com'
+app.config['MAIL_PORT'] = 587
+app.config['MAIL_USERNAME'] = os.environ['MAIL_USERNAME'] 
+app.config['MAIL_PASSWORD'] = os.environ['MAIL_PASSWORD']
+app.config['MAIL_USE_TLS'] = True
+mail = Mail(app)
 
 def login_required(func):
    @wraps(func)
@@ -84,21 +96,46 @@ def get_locations():
 @login_required
 def get_locationsUser():
    try:
-      '''
+      
       jj=request.get_json()
       userviewValidate=userviewloc_check(jj)
       if userviewValidate is not None:
          return jsonify({"success":False,"Message":"Json exception"})
-      '''
-      dbSession = Session()
-      #loc_objects = dbSession.query(Locationgeo.id,Locationgeo.userid,Locationgeo.name,ST_AsGeoJSON(Locationgeo.location).label('location')).filter(Locationgeo.userid==jj["user_id"])
-      loc_objects = dbSession.query(Locationgeo.objectid,Locationgeo.userid,Locationgeo.name,ST_X(Locationgeo.shape).label('longitude'),ST_Y(Locationgeo.shape).label('latitude')).filter(Locationgeo.userid==c_u.id)
+      
+      page=jj["page"]
+      total_pages=0
+      ROWS_PER_PAGE=5
 
+      dbSession = Session()  
+      obj_count=0
+      if(jj["search"]==""):
+         obj_count = dbSession.query(Locationgeo.userid).count()
+      else: 
+         obj_count = dbSession.query(Locationgeo.userid).filter(Locationgeo.name.ilike(jj["search"]+'%')).count()
+      
+      if(obj_count < ROWS_PER_PAGE):
+         total_pages=1
+      else:
+         total_pages=int(obj_count/ROWS_PER_PAGE)
+         if((obj_count % ROWS_PER_PAGE) != 0):
+            total_pages=1+total_pages
+
+      if(page > total_pages):
+         page=total_pages
+      if(page < 1):
+         page=1
+
+      offset=(page-1)*ROWS_PER_PAGE
+      loc_objects = None
+      if(jj["search"]==""):
+         loc_objects = dbSession.query(Locationgeo.objectid,Locationgeo.userid,Locationgeo.name,ST_X(Locationgeo.shape).label('longitude'),ST_Y(Locationgeo.shape).label('latitude')).offset(offset).limit(ROWS_PER_PAGE)
+      else:
+         loc_objects = dbSession.query(Locationgeo.objectid,Locationgeo.userid,Locationgeo.name,ST_X(Locationgeo.shape).label('longitude'),ST_Y(Locationgeo.shape).label('latitude')).filter(Locationgeo.name.ilike(jj["search"]+'%')).offset(offset).limit(ROWS_PER_PAGE)
       schema = UserLocationSchema(many=True)
       locations = schema.dump(loc_objects)
 
       dbSession.close()
-      return jsonify(locations)
+      return jsonify({"pages":total_pages,"list":locations})
    except:
       return jsonify({"success":False,"Message":"error occured"})
 
@@ -259,9 +296,87 @@ def user_idinfo():
                "userid": -1}
    return jsonify(**resp)
 
+@app.route('/forgot',  methods=['POST'])
+def forgotPassword():
+   try:
+      rj=request.get_json()
+      # signupValidate=signup_check(rj)
+      # if signupValidate is not None:
+      #    return jsonify({"success":False,"Message":"Json exception","user":"","username":False})
+      dbSession = Session() 
+      user_objects = dbSession.query(User).filter(User.username==rj["username"]).first()
+      if (user_objects == None or user_objects.email==""):
+         dbSession.close()
+         return jsonify({"success":False,"Message":"Username does not excist"})
+      rand_num = random_with_N_digits(6)
+      cu_email=user_objects.email
+      user_objects.passwordkey=rand_num
+      dbSession.commit()
+      dbSession.close()
+
+      msg = Message('Password reset', sender = os.environ['MAIL_USERNAME'] , recipients = [cu_email])
+      msg.body = "Your password reset key is : "+ str(rand_num)
+      mail.send(msg)
+      return jsonify({"success":True,"Message":"Email sent succesfully"})
+
+   except:
+      return jsonify({"success":False,"Message":"error occured"})
+
+@app.route('/passkeycheck',  methods=['POST'])
+def passkey():
+   try:
+      rj=request.get_json()
+      # loginValidate=login_check(rj)
+      # if loginValidate is not None:
+      #    return jsonify({"success":False,"Message":"Json exception","user":"","logged":False})
+      dbSession = Session()
+      user_objects = dbSession.query(User).filter(User.username==rj["username"], User.passwordkey==rj["passwordkey"]).first()
+      if (user_objects != None):
+         schema = UserSchema(many=False)
+         userDetails = schema.dump(user_objects)
+         result={"success":True,"Message":"Username found","user":userDetails}
+         dbSession.close()
+         return jsonify(result)
+      else:
+         result={"success":False,"Message":"Incorrect OTP","user":""}
+         dbSession.close()
+         return jsonify(result)
+   except:
+      return jsonify({"success":False,"Message":"error occured"})
+
+@app.route('/resetpass',  methods=['POST'])
+def resetPass():
+   try:
+      rj=request.get_json()
+      # signupValidate=signup_check(rj)
+      # if signupValidate is not None:
+      #    return jsonify({"success":False,"Message":"Json exception","user":"","username":False})
+      dbSession = Session() 
+      user_objects = dbSession.query(User).filter(User.username==rj["username"]).first()
+      if (user_objects.email == None or user_objects.email==""):
+         dbSession.close()
+         return jsonify({"success":False,"Message":"username does not excist"})
+      
+      user_objects.password=rj["password"]
+      dbSession.commit()
+      dbSession.close()
+
+      return jsonify({"success":True,"Message":"Password changed succesfully"})
+
+   except:
+      return jsonify({"success":False,"Message":"error occured","username":False})
+
 @app.route('/')
 def hi_world():
+   msg = Message('Hello', sender = os.environ['MAIL_USERNAME'] , recipients = ['praveen.roy@nestgroup.net'])
+   msg.body = "Hello Flask message sent from Flask-Mail"
+   mail.send(msg)
    return 'Hi'
+
+def random_with_N_digits(n):
+    range_start = 10**(n-1)
+    range_end = (10**n)-1
+    return randint(range_start, range_end)
 
 if __name__ == '__main__':
    app.run(debug = True)

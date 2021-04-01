@@ -16,6 +16,7 @@ import { ViewChild } from '@angular/core';
 })
 export class HomeComponent implements OnInit {
   @ViewChild(MatPaginator,{static: true}) paginator: MatPaginator | undefined;
+  currentPage:number=1;
   userName:any='';
   cu_id:any=-1;
   displayedColumns: string[] = ['objectid', 'name', 'latitude', 'longitude','zoom'];
@@ -28,6 +29,7 @@ export class HomeComponent implements OnInit {
     this.auth.userInfo().subscribe((data:any)=>{
       this.userName=data.body.data.name;
       this.cu_id=data.body.data.id;
+      this.search=AuthService.searchString;
     });
   }
   logoutClick()
@@ -52,13 +54,14 @@ export class HomeComponent implements OnInit {
     });
   }
   tableClick(){
-    this.auth.locationList().subscribe(async (data:any)=>{
+    this.currentPage=1;
+    this.auth.locationList("").subscribe(async (data:any)=>{
       if(data.body && !this.tableExpandedFlag)
       {
+        
         this.tableExpandedFlag=true;
-        await this.auth.reloadDatasource();
+        await this.auth.reloadDatasource(AuthService.searchString);
         this.dataSource=AuthService.dataSource;
-        this.dataSource.paginator=this.paginator;
         document.getElementById("mapDiv")!.style.width='70%';
         document.getElementById("tableDiv")!.style.width='30%';
         
@@ -80,9 +83,17 @@ export class HomeComponent implements OnInit {
     var c=[ele.longitude, ele.latitude];
     this.homeAuth.panMap(c);
   }
-  applyFilter(event: Event) {
+  decreaseClick(){
+    this.auth.decreasePage();
+  }
+  increaseClick(){
+    this.auth.increasePage();
+  }
+  async applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
-    this.dataSource.filter = filterValue.trim().toLowerCase();
+    AuthService.searchString=filterValue.trim().toLowerCase()
+    await this.auth.reloadDatasource(AuthService.searchString);
+    //this.dataSource.filter = filterValue.trim().toLowerCase();
   }
 }
 export interface PeriodicElement {
