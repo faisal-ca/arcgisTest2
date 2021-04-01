@@ -193,7 +193,7 @@ export class EsriMapComponent implements OnInit {
         this.expand = new Expand({
           view,
           content: cont2,
-          expanded: true,
+          expanded: false,
         });
     
         // Add the widget to the top-right corner of the view
@@ -501,7 +501,7 @@ var layerList = new LayerList({
           this.selectFeature(newIncidentId);
         }
 
-        this.httpS.reloadDatasource();
+        this.httpS.reloadDatasource(AuthService.searchString);
       })
       .catch(function(error:any) {
         console.log("===============================================");

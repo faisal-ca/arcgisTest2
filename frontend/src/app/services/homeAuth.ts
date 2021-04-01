@@ -68,7 +68,7 @@ export class HomeAuthService implements  CanActivate{
     panMap(coordinates:any) {
       this.view.goTo(coordinates)
       .then(() => {
-        this.view.zoom = 18;
+        this.view.zoom = 16;
         setTimeout(() => {
           this.panToWonderComplete();
         }, 2000);
