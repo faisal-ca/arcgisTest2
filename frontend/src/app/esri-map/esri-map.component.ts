@@ -12,9 +12,11 @@ import { initialize } from 'esri/identity/IdentityManager';
 import { from, observable } from 'rxjs';
 import { AuthService } from '../services/authService';
 import { HomeAuthService } from '../services/homeAuth';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog ,MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
 import { MatTable } from '@angular/material/table';
-import { BmDialogBoxComponent } from './bm-dialog-box/bm-dialog-box.component';
+
+
+
 
 
 
@@ -38,9 +40,10 @@ export class EsriMapComponent implements OnInit {
   private new_extent:any=null;;
   outsideBoundFlag:Boolean=false;
   user_id:any=-1;
+  private name:any=null;
  
 
-  displayedColumns: string[] = ['Id','name','zoom','Edit','Delete'];
+  displayedColumns: string[] = ['name','zoom','Edit','Delete'];
   dataSource:any = [];
   userForm = new FormGroup({
     name: new FormControl('', [Validators.required, Validators.maxLength(10)])
@@ -52,7 +55,7 @@ bookmarkForm = new FormGroup({
   title = 'ng-cli';
   @ViewChild('expandView', { static: true }) private xView!: ElementRef;
   @ViewChild('expandViewbookmark', { static: true }) private bmView!: ElementRef;
-  @ViewChild(MatTable, { static: true })table!: MatTable<any>;
+ 
   editArea :any=null
   updateInstructionDiv :any =null;
   attributeEditing :any=null;
@@ -255,6 +258,7 @@ bookmarkForm = new FormGroup({
         this.toggle=true;
         //await this.authService.reloadDatasource();
           this.dataSource=data.body;
+          debugger;
       }
       else{
         this.toggle=false;
@@ -278,20 +282,11 @@ bookmarkForm = new FormGroup({
     
     }
 
-    openDialog(action:any,obj:any) {
-      obj.action = action;
-      const dialogRef = this.dialog.open(this.bm-dialog-box, {
-        width: '250px',
-        data:obj
-      });
+    
   
-      dialogRef.afterClosed().subscribe(result => {
-        if(result.event == 'Update'){
-          this.Updatebookmark(result.data);
-        
-        }
-      });
-    }
+  
+
+    
 
     Updatebookmark(data:any)
     {

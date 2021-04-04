@@ -129,6 +129,7 @@ export class AuthService implements  CanActivate{
       return this.http.post(`${this.API_URL}/deletebm`, body, {headers: head, observe: 'response'})
               .pipe(catchError(this.erroHandler));
     }
+    
 
     BookMarkList(data:any): Observable<any> {
       const head = new HttpHeaders({ 'content-type': 'application/json'} ); 
@@ -141,6 +142,7 @@ export class AuthService implements  CanActivate{
       return this.http.post(`${this.API_URL}/bookmarklist` , body , {headers: head, observe: 'response'})
               .pipe(catchError(this.erroHandler));
     }
+    
 
     reloadBMlist(data:any):any{
         var bmid= {"id":data}
