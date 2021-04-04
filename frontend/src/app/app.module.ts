@@ -21,6 +21,8 @@ import { SignupComponent } from './signup/signup.component';
 import { ProfileComponent } from './profile/profile.component';
 import { WindowComponent } from './window/window.component';
 import {​​​​​​​​MatSlideToggleModule}​​​​​​​​ from'@angular/material/slide-toggle';
+import { MatDialogModule } from '@angular/material/dialog';
+import { BmDialogBoxComponent } from './bm-dialog-box/bm-dialog-box.component';
 
 @NgModule({
   declarations: [
@@ -30,7 +32,8 @@ import {​​​​​​​​MatSlideToggleModule}​​​​​​​​ fr
     EsriMapComponent,
     SignupComponent,
     ProfileComponent,
-    WindowComponent
+    WindowComponent,
+    BmDialogBoxComponent
   ],
   imports: [
     BrowserModule,
@@ -44,7 +47,8 @@ import {​​​​​​​​MatSlideToggleModule}​​​​​​​​ fr
     MatTableModule,
     MatInputModule,
     MatPaginatorModule,
-    ​​​​​​​​MatSlideToggleModule
+    ​​​​​​​​MatSlideToggleModule,
+    MatDialogModule
   ],
   providers: [AuthService,HomeAuthService],
   bootstrap: [AppComponent]

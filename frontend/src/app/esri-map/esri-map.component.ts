@@ -9,9 +9,14 @@ import {loadModules} from 'esri-loader';
 import { ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angular/forms';
 import esri=__esri;
 import { initialize } from 'esri/identity/IdentityManager';
-import { observable } from 'rxjs';
+import { from, observable } from 'rxjs';
 import { AuthService } from '../services/authService';
 import { HomeAuthService } from '../services/homeAuth';
+import { MatDialog } from '@angular/material/dialog';
+import { MatTable } from '@angular/material/table';
+import { BmDialogBoxComponent } from './bm-dialog-box/bm-dialog-box.component';
+
+
 
 @Component({
   selector: 'app-esri-map',
@@ -33,8 +38,9 @@ export class EsriMapComponent implements OnInit {
   private new_extent:any=null;;
   outsideBoundFlag:Boolean=false;
   user_id:any=-1;
+ 
 
-  displayedColumns: string[] = ['name','zoom','Edit','Delete'];
+  displayedColumns: string[] = ['Id','name','zoom','Edit','Delete'];
   dataSource:any = [];
   userForm = new FormGroup({
     name: new FormControl('', [Validators.required, Validators.maxLength(10)])
@@ -46,6 +52,7 @@ bookmarkForm = new FormGroup({
   title = 'ng-cli';
   @ViewChild('expandView', { static: true }) private xView!: ElementRef;
   @ViewChild('expandViewbookmark', { static: true }) private bmView!: ElementRef;
+  @ViewChild(MatTable, { static: true })table!: MatTable<any>;
   editArea :any=null
   updateInstructionDiv :any =null;
   attributeEditing :any=null;
@@ -54,8 +61,10 @@ bookmarkForm = new FormGroup({
   invalidUserIdFlag: boolean=false;
   showBmTable:boolean=false;
   toggle:boolean=false;
-  constructor(private httpS:AuthService,private homeAuthService:HomeAuthService,private authService:AuthService) {}
+  constructor(private httpS:AuthService,private homeAuthService:HomeAuthService,private authService:AuthService,private dialog: MatDialog) {}
 
+
+  
   ngAfterViewInit(){
     //this.mapService.panToWonder([77.036390, 0.047049]);
     console.log("AfterInit");
@@ -250,6 +259,7 @@ bookmarkForm = new FormGroup({
       else{
         this.toggle=false;
       }
+      debugger
       });  
   }
 
@@ -267,8 +277,25 @@ bookmarkForm = new FormGroup({
     })
     
     }
+
+    openDialog(action:any,obj:any) {
+      obj.action = action;
+      const dialogRef = this.dialog.open(this.bm-dialog-box, {
+        width: '250px',
+        data:obj
+      });
+  
+      dialogRef.afterClosed().subscribe(result => {
+        if(result.event == 'Update'){
+          this.Updatebookmark(result.data);
+        
+        }
+      });
+    }
+
     Updatebookmark(data:any)
     {
+      
       var bm= {"id":data.Id,"name":this.bookmarkForm.value.bookmarkname};
       this.authService.updatebookmark(bm).subscribe((data:any)=>{
         debugger;
@@ -284,14 +311,16 @@ bookmarkForm = new FormGroup({
     {
       var bm= {"id":data.Id};
       this.authService.deletebookmark(bm).subscribe((data:any)=>{
-        debugger;
+       
         if(data.body.logged)
         {
           alert(data.body.Message);
           //this.authService.reloadBMlist(this.user_id);
-
+          this.dataSource=this.authService.reloadBMlist(this.user_id);
+          
         }
-        debugger;
+       
+        debugger
       })
      
     }
@@ -410,9 +439,11 @@ bookmarkForm = new FormGroup({
       this.editFeature.attributes["name"] = this.userForm.value.name;
       if(this.editFeature.attributes["userid"] != this.user_id)
       {
+        
         this.invalidUserIdFlag=true;
         return;
       }
+      
       
       var edits = {
         updateFeatures: [this.editFeature]

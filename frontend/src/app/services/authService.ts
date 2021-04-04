@@ -143,11 +143,12 @@ export class AuthService implements  CanActivate{
     }
 
     reloadBMlist(data:any):any{
-
-         this.BookMarkList(data).subscribe((data:any)=>{
+        var bmid= {"id":data}
+         this.BookMarkList(bmid).subscribe((data:any)=>{
         if(data.body)
         {
-          return data
+          debugger
+          return data.body
           
         }
       });
