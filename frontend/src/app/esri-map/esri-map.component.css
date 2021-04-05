@@ -77,9 +77,13 @@ table {
 th, td { 
   text-align: left; 
   padding: 8px; 
+
 } 
 th{
   background-color:#869aa8;
+ 
+  color: #374046;
+  font-size: medium;
 }
 tr:nth-child(even) { 
   background-color: #b2bfc9; 
