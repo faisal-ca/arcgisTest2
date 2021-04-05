@@ -35,6 +35,7 @@ export class BmDialogBoxComponent implements OnInit {
         
           alert(data.body.Message)
           this.homeAuthService.reloadBMlist(this.updt.data2)
+          this.onNoClick()
         
         debugger;
       })

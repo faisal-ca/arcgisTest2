@@ -1,8 +1,8 @@
-<form [formGroup]="bmForm"   >
+<form [formGroup]="bmForm"  class="dialogclass" >
     
-    Name: <input formControlName="Name" >
+    <label for="name">Name:</label> <input formControlName="Name" id="txt1" >
    
-    <button type="submit" (click)="Updatebookmark()" >Update</button> 
-    <button type="button" (click)="onNoClick()">Cancel</button> 
+    <button type="submit" class="btn" (click)="Updatebookmark()" >Update</button> 
+    <button type="button" class="btn" (click)="onNoClick()">Cancel</button> 
   </form> 
     

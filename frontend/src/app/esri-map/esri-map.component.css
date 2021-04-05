@@ -79,10 +79,10 @@ th, td {
   padding: 8px; 
 } 
 th{
-  background-color:#6BB8EF;
+  background-color:#869aa8;
 }
 tr:nth-child(even) { 
-  background-color: #acd3f0; 
+  background-color: #b2bfc9; 
 }
 tr:nth-child(odd) { 
   background-color: #DCE7EF; 
