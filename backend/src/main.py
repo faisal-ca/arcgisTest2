@@ -276,10 +276,7 @@ def update_bookmark():
       loc_objects = dbSession.query(Bookmark).filter(Bookmark.Id==rj["id"]).first()
       if (loc_objects != None):
          loc_objects.name=rj["name"]
-         loc_objects.Xmin=rj["Xmin"]
-         loc_objects.Xmax=rj["Xmax"]
-         loc_objects.Ymin=rj["Ymin"]
-         loc_objects.Ymax=rj["Ymax"]
+         
          
          dbSession.commit()
          result={"success":True,"Message":"updated","logged":True}

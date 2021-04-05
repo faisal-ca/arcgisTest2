@@ -131,31 +131,7 @@ export class AuthService implements  CanActivate{
     }
     
 
-    BookMarkList(data:any): Observable<any> {
-      const head = new HttpHeaders({ 'content-type': 'application/json'} ); 
-      const body=JSON.stringify(data);
-      const httpOptions = {
-        
-        headers: head,
-        observe: 'response'
-      };
-      return this.http.post(`${this.API_URL}/bookmarklist` , body , {headers: head, observe: 'response'})
-              .pipe(catchError(this.erroHandler));
-    }
-    
-
-    reloadBMlist(data:any):any{
-        var bmid= {"id":data}
-         this.BookMarkList(bmid).subscribe((data:any)=>{
-        if(data.body)
-        {
-          debugger
-          return data.body
-          
-        }
-      });
-    }
-
+  
     locationList(): Observable<any> {
       const head = new HttpHeaders({ 'content-type': 'application/json'} ); 
       const body="";

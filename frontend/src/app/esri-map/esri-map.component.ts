@@ -14,6 +14,7 @@ import { AuthService } from '../services/authService';
 import { HomeAuthService } from '../services/homeAuth';
 import { MatDialog ,MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
 import { MatTable } from '@angular/material/table';
+import { BmDialogBoxComponent } from '../bm-dialog-box/bm-dialog-box.component';
 
 
 
@@ -75,6 +76,7 @@ bookmarkForm = new FormGroup({
   
 
   public ngOnInit() {
+    
     try{
   
     this.initializeMap().then(() => {
@@ -94,6 +96,7 @@ bookmarkForm = new FormGroup({
         }
         
         this.homeAuthService.setView(this.view);
+        this.homeAuthService.reloadBMlist(this.user_id);
       });
 
       this.printCount();
@@ -104,7 +107,7 @@ bookmarkForm = new FormGroup({
   catch(error){
     console.error("EsriLoader: ", error)
   }
-
+  
       
   }
   async printCount() {
@@ -250,20 +253,26 @@ bookmarkForm = new FormGroup({
       document.getElementById('bookmarkUpdateDiv')!.style.display="none";
     }
 
-  bmtableClick(){ 
+   bmtableClick(){ 
     var bmid= {"id":this.user_id}
-    this.authService.BookMarkList(bmid).subscribe(async (data:any)=>{
-    if(!this.toggle)
+    this.homeAuthService.BookMarkList(bmid).subscribe( async(data:any)=>{
+    if(data.body && !this.toggle)
       {
         this.toggle=true;
+        debugger;
+        await this.homeAuthService.reloadBMlist(this.user_id);
+        this.dataSource=HomeAuthService.dataSource;
+        debugger;
+        document.getElementById("mapDiv")!.style.height='60%';
+        document.getElementById("tableDiv")!.style.height='40%';
         //await this.authService.reloadDatasource();
-          this.dataSource=data.body;
-          debugger;
+         // this.dataSource=data.body;
       }
       else{
         this.toggle=false;
+        document.getElementById("tableDiv")!.style.height='0%';
+        document.getElementById("mapDiv")!.style.height='100%';
       }
-      debugger
       });  
   }
 
@@ -276,19 +285,28 @@ bookmarkForm = new FormGroup({
       if(data.body.logged)
       {
         alert(data.body.Message)
+        this.homeAuthService.reloadBMlist(this.user_id);
       }
       debugger;
     })
     
     }
 
+    modify(data:any)
+  {
+  
+      const dialogRef = this.dialog.open(BmDialogBoxComponent, {
+        width: '250px',
+        data:  {data1:data,data2:this.user_id}
+      });
     
+  }
   
   
 
     
 
-    Updatebookmark(data:any)
+    /*Updatebookmark(data:any)
     {
       
       var bm= {"id":data.Id,"name":this.bookmarkForm.value.bookmarkname};
@@ -297,11 +315,12 @@ bookmarkForm = new FormGroup({
         if(data.body.logged)
         {
           alert(data.body.Message)
+          this.dataSource=this.homeAuthService.reloadBMlist(this.user_id);
         }
         debugger;
       })
      
-    }
+    }*/
     deletebookmark(data:any)
     {
       var bm= {"id":data.Id};
@@ -311,7 +330,9 @@ bookmarkForm = new FormGroup({
         {
           alert(data.body.Message);
           //this.authService.reloadBMlist(this.user_id);
-          this.dataSource=this.authService.reloadBMlist(this.user_id);
+          this.homeAuthService.reloadBMlist(this.user_id);
+          
+          
           
         }
        
