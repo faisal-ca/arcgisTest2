@@ -1,4 +1,4 @@
-#!"d:\faisal\python training\arcgistest\backend\venv\scripts\python.exe"
+#!d:\priyamol\git\arcgistest2\backend\venv\scripts\python.exe
 # EASY-INSTALL-ENTRY-SCRIPT: 'future==0.18.2','console_scripts','pasteurize'
 import re
 import sys

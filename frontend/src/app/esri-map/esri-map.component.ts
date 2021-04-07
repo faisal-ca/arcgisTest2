@@ -9,9 +9,17 @@ import {loadModules} from 'esri-loader';
 import { ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angular/forms';
 import esri=__esri;
 import { initialize } from 'esri/identity/IdentityManager';
-import { observable } from 'rxjs';
+import { from, observable } from 'rxjs';
 import { AuthService } from '../services/authService';
 import { HomeAuthService } from '../services/homeAuth';
+import { MatDialog ,MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
+import { MatTable } from '@angular/material/table';
+import { BmDialogBoxComponent } from '../bm-dialog-box/bm-dialog-box.component';
+
+
+
+
+
 
 @Component({
   selector: 'app-esri-map',
@@ -30,22 +38,39 @@ export class EsriMapComponent implements OnInit {
   private expand:any=null;
   private firstFlag:boolean=true;
   private mainFeatureLayer:any=null;
+  private new_extent:any=null;;
   outsideBoundFlag:Boolean=false;
   user_id:any=-1;
+  private name:any=null;
+ 
+
+  displayedColumns: string[] = ['name','zoom','Edit','Delete'];
+  dataSource:any = [];
+  
+
   userForm = new FormGroup({
-    name: new FormControl('', [Validators.required, Validators.maxLength(10)])
+  name: new FormControl('', [Validators.required, Validators.maxLength(10)])
+}); 
+bookmarkForm = new FormGroup({
+  bookmarkname: new FormControl('', [Validators.required, Validators.maxLength(10)])
 }); 
   @ViewChild('mapViewNode', { static: true }) private mapViewEl!: ElementRef; // needed to inject the MapView into the DOM
   title = 'ng-cli';
   @ViewChild('expandView', { static: true }) private xView!: ElementRef;
+  @ViewChild('expandViewbookmark', { static: true }) private bmView!: ElementRef;
+ 
   editArea :any=null
   updateInstructionDiv :any =null;
   attributeEditing :any=null;
   inputDescription:string="hello";
   inputUserInfo:any="";
   invalidUserIdFlag: boolean=false;
-  constructor(private httpS:AuthService,private homeAuthService:HomeAuthService) {}
+  showBmTable:boolean=false;
+  toggle:boolean=false;
+  constructor(private httpS:AuthService,private homeAuthService:HomeAuthService,private authService:AuthService,private dialog: MatDialog) {}
 
+
+  
   ngAfterViewInit(){
     //this.mapService.panToWonder([77.036390, 0.047049]);
     console.log("AfterInit");
@@ -53,9 +78,9 @@ export class EsriMapComponent implements OnInit {
   
 
   public ngOnInit() {
-    try{
-
     
+    try{
+  
     this.initializeMap().then(() => {
       // The map has been initialized
       
@@ -71,7 +96,9 @@ export class EsriMapComponent implements OnInit {
           this.user_id=data.body.data.id;
           this.hideElements();
         }
+        
         this.homeAuthService.setView(this.view);
+        this.homeAuthService.reloadBMlist(this.user_id);
       });
 
       this.printCount();
@@ -82,7 +109,7 @@ export class EsriMapComponent implements OnInit {
   catch(error){
     console.error("EsriLoader: ", error)
   }
-
+  
       
   }
   async printCount() {
@@ -112,14 +139,14 @@ export class EsriMapComponent implements OnInit {
           "esri/layers/Layer",
           "esri/layers/FeatureLayer",
           "esri/widgets/Home",
-          "esri/widgets/Popup"
+          "esri/widgets/Popup",
           
-          
-
+        
         ]);
 
         const container = this.mapViewEl.nativeElement;
         const cont2=this.xView.nativeElement;
+        const cont3 =this.bmView.nativeElement;
 
         this.editArea = document.getElementById("editArea");
         this.updateInstructionDiv = document.getElementById("updateInstructionDiv");
@@ -176,6 +203,12 @@ export class EsriMapComponent implements OnInit {
   
         const view = new MapView(mapViewProperties);
         
+        var expandbm = new Expand({
+          view,
+          content: cont3,
+          expanded: true,
+        });
+        view.ui.add(expandbm, "top-left");
 
         this.expand = new Expand({
           view,
@@ -209,6 +242,102 @@ export class EsriMapComponent implements OnInit {
         return null;
       }
   }
+
+  bookmarkform(){
+    document.getElementById('bookmarkUpdateDiv')!.style.display="block";
+  }
+
+  close(){
+    this.bookmarkForm.setValue({bookmarkname:"" });
+    
+      document.getElementById('bookmarkUpdateDiv')!.style.display="none";
+    }
+
+   bmtableClick(){ 
+    var bmid= {"id":this.user_id}
+    this.homeAuthService.BookMarkList(bmid).subscribe( async(data:any)=>{
+    if(data.body && !this.toggle)
+      {
+        this.toggle=true;
+        debugger;
+        await this.homeAuthService.reloadBMlist(this.user_id);
+        this.dataSource=HomeAuthService.dataSource;
+        debugger;
+        //document.getElementById("mapDiv")!.style.height='60%';
+        //document.getElementById("tableDiv")!.style.height='40%';
+        //await this.authService.reloadDatasource();
+         // this.dataSource=data.body;
+      }
+      else{
+        this.toggle=false;
+        //document.getElementById("tableDiv")!.style.height='0%';
+        //document.getElementById("mapDiv")!.style.height='100%';
+      }
+      });  
+  }
+
+  Savebookmark() {
+     
+    var bm= {"Uid":this.user_id,"name": this.bookmarkForm.value.bookmarkname, "Xmin": this.view.extent.xmin,"Ymin":this.view.extent.ymin,"Xmax":this.view.extent.xmax,"Ymax":this.view.extent.ymax}
+    debugger;
+    this.authService.addbookmark(bm).subscribe((data:any)=>{
+      debugger;
+      if(data.body.logged)
+      {
+        alert(data.body.Message)
+        this.homeAuthService.reloadBMlist(this.user_id);
+      }
+      debugger;
+    })
+    
+    }
+
+    modify(data:any)
+  {
+  
+      const dialogRef = this.dialog.open(BmDialogBoxComponent, {
+        width: '250px',
+        data:  {data1:data,data2:this.user_id}
+      });
+    
+  }
+  
+    deletebookmark(data:any)
+    {
+      var bm= {"id":data.Id};
+      this.authService.deletebookmark(bm).subscribe((data:any)=>{
+       
+        if(data.body.logged)
+        {
+          alert(data.body.Message);
+          //this.authService.reloadBMlist(this.user_id);
+          this.homeAuthService.reloadBMlist(this.user_id);
+ 
+        }
+       
+        debugger
+      })
+     
+    }
+    async zoomtoexten(data:any)
+  {
+    const [Extent]=await loadModules([ "esri/geometry/Extent"]);
+    debugger;
+    this.new_extent= new Extent({
+      xmin: data.Xmin, 
+      ymin: data.Ymin, 
+      xmax:data.Xmax, 
+      ymax: data.Ymax,
+      spatialReference: this.view.extent.spatialReference
+     });
+    this.view.goTo(this.new_extent);
+      
+    
+  }
+  
+
+  
+
 
   hideElements(){
     var query = this.featureLayer.createQuery();
@@ -311,9 +440,11 @@ export class EsriMapComponent implements OnInit {
       this.editFeature.attributes["name"] = this.userForm.value.name;
       if(this.editFeature.attributes["userid"] != this.user_id)
       {
+        
         this.invalidUserIdFlag=true;
         return;
       }
+      
       
       var edits = {
         updateFeatures: [this.editFeature]

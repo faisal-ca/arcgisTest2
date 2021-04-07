@@ -1,7 +1,7 @@
 import json,copy
 from flask import Flask, jsonify, request,session,redirect,url_for,current_app
-from .entities.models import Locationgeo,User
-from .entities.models import LocationSchema,UserSchema,UserLocationSchema
+from .entities.models import Locationgeo,User,Bookmark
+from .entities.models import LocationSchema,UserSchema,UserLocationSchema,bookmarkSchema
 from .entities.validate import valid_check,login_check,addloc_check,updateloc_check,userviewloc_check,signup_check
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import func
@@ -245,6 +245,78 @@ def user_info():
                "logged":False,
                "data": {"message": "user no login","name":"","userid":-1,"email":"","username":""}}
    return jsonify(**resp)
+
+@app.route('/deletebm',  methods=['POST'])
+@login_required
+def delete_bm():
+   try:
+      jj=request.get_json()    
+      dbSession = Session()
+      loc_objects = dbSession.query(Bookmark).filter(Bookmark.Id==jj["id"]).first()
+      if (loc_objects != None):
+         dbSession.delete(loc_objects)
+         dbSession.commit()
+         result={"success":True,"Message":"deleted","logged":True}
+         dbSession.close()
+         return jsonify(result)
+      else:
+         result={"success":False,"Message":"ID not found","logged":True}
+         dbSession.close()
+         return jsonify(result)
+   except:
+      return jsonify({"success":False,"Message":"error occured","logged":True})
+
+@app.route('/updatebookmark',  methods=['POST'])
+@login_required
+def update_bookmark():
+   try:
+      rj=request.get_json()
+      
+      dbSession = Session()
+      loc_objects = dbSession.query(Bookmark).filter(Bookmark.Id==rj["id"]).first()
+      if (loc_objects != None):
+         loc_objects.name=rj["name"]
+         
+         
+         dbSession.commit()
+         result={"success":True,"Message":"updated","logged":True}
+         dbSession.close()
+         return jsonify(result)
+      else:
+         result={"success":False,"Message":"ID not found","logged":True}
+         dbSession.close()
+         return jsonify(result)
+   except:
+      return jsonify({"success":False,"Message":"error occured","logged":True})
+
+@app.route('/bookmarklist',methods=['POST'])
+@login_required
+def get_bookmark():
+   try:
+      jj=request.get_json()
+      dbSession = Session()
+      bm_objects = dbSession.query(Bookmark.Id,Bookmark.Uid,Bookmark.Xmax,Bookmark.Xmin,Bookmark.Ymax,Bookmark.Ymin,Bookmark.name).filter(Bookmark.Uid==jj["id"])
+      schema = bookmarkSchema(many=True)
+      bookmarks = schema.dump(bm_objects)
+      dbSession.close()
+      return jsonify(bookmarks)
+   except:
+      return jsonify({"success":False,"Message":"error occured"})
+
+@app.route('/addbookmark',  methods=['POST'])
+@login_required      
+def addbookmark():
+   try:
+      rj=request.get_json()
+      dbSession = Session()
+      c1 = Bookmark(Uid=rj["Uid"],name=rj["name"],Xmin=rj["Xmin"],Xmax=rj["Xmax"],Ymin=rj["Ymin"],Ymax=rj["Ymax"])
+      dbSession.add(c1)
+      dbSession.commit()
+      dbSession.close()
+      return jsonify({"success":True,"Message":"Bookmark added succesfully","logged":True})
+   except:
+      return jsonify({"success":False,"Message":"error occured","logged":True})
+
 
 @app.route('/user_id', methods=['POST'])
 def user_idinfo():

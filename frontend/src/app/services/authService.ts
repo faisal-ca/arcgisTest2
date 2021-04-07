@@ -95,6 +95,43 @@ export class AuthService implements  CanActivate{
       return this.http.post(`${this.API_URL}/user_info`, body, {headers: head, observe: 'response'})
               .pipe(catchError(this.erroHandler));
     }
+
+    addbookmark(person:any): Observable<any> {
+      const head = new HttpHeaders({ 'content-type': 'application/json'} ); 
+      const body=JSON.stringify(person);
+      const httpOptions = {
+        
+        headers: head,
+        observe: 'response'
+      };
+      return this.http.post(`${this.API_URL}/addbookmark`, body, {headers: head, observe: 'response'})
+              .pipe(catchError(this.erroHandler));
+    }
+    updatebookmark(person:any): Observable<any> {
+      const head = new HttpHeaders({ 'content-type': 'application/json'} ); 
+      const body=JSON.stringify(person);
+      const httpOptions = {
+        
+        headers: head,
+        observe: 'response'
+      };
+      return this.http.post(`${this.API_URL}/updatebookmark`, body, {headers: head, observe: 'response'})
+              .pipe(catchError(this.erroHandler));
+    }
+   deletebookmark(person:any): Observable<any> {
+      const head = new HttpHeaders({ 'content-type': 'application/json'} ); 
+      const body=JSON.stringify(person);
+      const httpOptions = {
+        
+        headers: head,
+        observe: 'response'
+      };
+      return this.http.post(`${this.API_URL}/deletebm`, body, {headers: head, observe: 'response'})
+              .pipe(catchError(this.erroHandler));
+    }
+    
+
+  
     locationList(): Observable<any> {
       const head = new HttpHeaders({ 'content-type': 'application/json'} ); 
       const body="";
