@@ -20,15 +20,11 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { SignupComponent } from './signup/signup.component';
 import { ProfileComponent } from './profile/profile.component';
 import { WindowComponent } from './window/window.component';
-<<<<<<< HEAD
-import { MatCheckboxModule } from '@angular/material/checkbox';
-import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 
-=======
 import {​​​​​​​​MatSlideToggleModule}​​​​​​​​ from'@angular/material/slide-toggle';
 import { MatDialogModule } from '@angular/material/dialog';
 import { BmDialogBoxComponent } from './bm-dialog-box/bm-dialog-box.component';
->>>>>>> origin/bookmark
+
 
 @NgModule({
   declarations: [
