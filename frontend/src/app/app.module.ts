@@ -20,8 +20,9 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { SignupComponent } from './signup/signup.component';
 import { ProfileComponent } from './profile/profile.component';
 import { WindowComponent } from './window/window.component';
-import { UsernameComponent } from './passreset/username/username.component'
-
+import { UsernameComponent } from './passreset/username/username.component';
+import { NgxPaginationModule } from 'ngx-pagination';
+import {MatSelectModule} from '@angular/material/select';
 
 @NgModule({
   declarations: [
@@ -45,7 +46,10 @@ import { UsernameComponent } from './passreset/username/username.component'
     NoopAnimationsModule,
     MatTableModule,
     MatInputModule,
-    MatPaginatorModule
+    MatPaginatorModule,
+    NgxPaginationModule,
+    MatSelectModule
+
   ],
   providers: [AuthService,HomeAuthService],
   bootstrap: [AppComponent]

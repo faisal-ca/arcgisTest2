@@ -16,7 +16,7 @@
         <mat-label>Search names</mat-label>
         <input matInput (keyup)="applyFilter($event)" placeholder="search names" [(ngModel)]="search" #input>
       </mat-form-field>
-      <table mat-table [dataSource]="dataSource" class="mat-elevation-z8" >
+      <table mat-table [dataSource]="dataSource | paginate: {itemsPerPage: pagesize, currentPage: currentPage, totalItems: rowcount}" class="mat-elevation-z8" >
 
         <!--- Note that these columns can be defined in any order.
               The actual rendered columns are set as a property on the row definition" -->
@@ -53,14 +53,23 @@
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
         <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
       </table>
-      <div style="float: right; margin: 10px;">
+      <pagination-controls (pageChange)="currentPage = $event;paginate(currentPage)" (click)="$event.stopPropagation();"></pagination-controls>
+
+ Items per page:
+ <mat-select [(value)]="pagesize" (valueChange)="pageindex(pagesize)" style="width: 50px;margin-left: 15px"(click)="$event.stopPropagation();">
+  <mat-option [value]="1">1</mat-option>
+  <mat-option [value]="2">2</mat-option>
+  <mat-option [value]="3">3</mat-option>
+  <mat-option [value]="4">4</mat-option>
+   </mat-select> 
+      <!-- <div style="float: right; margin: 10px;">
         <a class="btn btn-outline-primary" (click)="decreaseClick()">
           &laquo;
         </a>
         <a class="btn btn-outline-primary" (click)="increaseClick()">
           &raquo;
         </a>
-      </div> <br/><br/>
+      </div> <br/><br/> -->
       <div style="float: right; margin: 10px;width:100%">
         <p class="text-end"> Showing page {{ this.auth.currentPage }} of {{this.auth.totalPages}}</p> 
       </div>

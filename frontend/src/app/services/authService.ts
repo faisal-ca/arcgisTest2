@@ -14,11 +14,14 @@ import { MatPaginator } from '@angular/material/paginator';
 })
 
 export class AuthService implements  CanActivate{
+
+  
     private API_URL="http://127.0.0.1:5000";
     static dataSource:any=null;
     static searchString:string="";
     currentPage:number=1;
     totalPages:number=0;
+    pagesize:number=5;
     constructor(private http: HttpClient,private router:Router) {
     }
     canActivate(
@@ -98,9 +101,9 @@ export class AuthService implements  CanActivate{
       return this.http.post(`${this.API_URL}/user_info`, body, {headers: head, observe: 'response'})
               .pipe(catchError(this.erroHandler));
     }
-    locationList(search:string): Observable<any> {
+    locationList(currentpage:number, pagesize:number, search:string): Observable<any> {
       const head = new HttpHeaders({ 'content-type': 'application/json'} ); 
-      const body={"page": this.currentPage, "search":search};
+      const body={"page": this.currentPage, "pagesize":pagesize, "search":search};
       const httpOptions = {
         
         headers: head,
@@ -143,9 +146,18 @@ export class AuthService implements  CanActivate{
       return this.http.post(`${this.API_URL}/resetpass`, body, {headers: head, observe: 'response'})
               .pipe(catchError(this.erroHandler));
     }
+    tablecount(): Observable<any> {
+      
+      let headers = new HttpHeaders({ 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
+      headers.append('Access-Control-Allow-Origin', 'http://localhost:5000');
+      headers.append('Access-Control-Allow-Credentials', 'true');
+      return this.http.get(this.API_URL + '/getcount', { headers: headers }).pipe(map(data => data))
+    }
 
     reloadDatasource(search:string):any{
-      return this.locationList(search).subscribe((data:any)=>{
+      
+      
+      return this.locationList(this.currentPage, this.pagesize, search).subscribe((data:any)=>{
         if(data.body)
         {
           this.totalPages=data.body.pages;
@@ -166,16 +178,20 @@ export class AuthService implements  CanActivate{
       {
         this.currentPage=this.totalPages;
       }
+      //this.reloadDatasource(AuthService.searchString);
+    }
+    Page(event:any){
+      
+    this.currentPage= event;
+      
       this.reloadDatasource(AuthService.searchString);
     }
-    decreasePage(){
-      this.currentPage--;
-      if(this.currentPage < 1)
-      {
-        this.currentPage=1;
+    PageInd(event:any){
+      
+      this.pagesize= event;
+        
+        this.reloadDatasource(AuthService.searchString);
       }
-      this.reloadDatasource(AuthService.searchString);
-    }
     erroHandler(error: HttpErrorResponse | any) {
       return throwError(error.message || 'server Error');
     }

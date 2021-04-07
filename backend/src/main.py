@@ -138,7 +138,15 @@ def get_locationsUser():
       return jsonify({"pages":total_pages,"list":locations})
    except:
       return jsonify({"success":False,"Message":"error occured"})
-
+@app.route('/getcount',  methods=['GET'])
+def get_count():
+   try:
+      dbSession = Session()
+      count = dbSession.query(Locationgeo).count()
+      dbSession.close()
+      return jsonify(count)
+   except:
+      return jsonify({"success":False,"Message":"error occured"})
 @app.route('/deleteloc',  methods=['POST'])
 @login_required
 def delete_loc():

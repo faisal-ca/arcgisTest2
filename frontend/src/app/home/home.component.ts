@@ -15,14 +15,17 @@ import { ViewChild } from '@angular/core';
   styleUrls: ['./home.component.css']
 })
 export class HomeComponent implements OnInit {
+  Tdata: PeriodicElement[] = [];
   @ViewChild(MatPaginator,{static: true}) paginator: MatPaginator | undefined;
   currentPage:number=1;
+  pagesize:number=5;
   userName:any='';
   cu_id:any=-1;
   displayedColumns: string[] = ['objectid', 'name', 'latitude', 'longitude','zoom'];
-  dataSource:any = [];
+  dataSource:PeriodicElement[] = [];
   tableExpandedFlag:boolean=false;
   search:any='';
+  rowcount:any;
   constructor(public auth:AuthService,public router:Router, private homeAuth:HomeAuthService) { }
 
   ngOnInit(): void {
@@ -54,14 +57,22 @@ export class HomeComponent implements OnInit {
     });
   }
   tableClick(){
+    this.auth.tablecount().subscribe((data: any) => {
+
+      this.rowcount = data
+      
+
+    });
     this.currentPage=1;
-    this.auth.locationList("").subscribe(async (data:any)=>{
+    this.auth.locationList(this.currentPage,this.pagesize,"").subscribe(async (data:any)=>{
       if(data.body && !this.tableExpandedFlag)
       {
+        this.Tdata = data.body.list;
         
         this.tableExpandedFlag=true;
-        await this.auth.reloadDatasource(AuthService.searchString);
-        this.dataSource=AuthService.dataSource;
+        //await this.auth.reloadDatasource(AuthService.searchString);
+        this.dataSource= AuthService.dataSource;
+
         document.getElementById("mapDiv")!.style.width='70%';
         document.getElementById("tableDiv")!.style.width='30%';
         
@@ -83,9 +94,21 @@ export class HomeComponent implements OnInit {
     var c=[ele.longitude, ele.latitude];
     this.homeAuth.panMap(c);
   }
-  decreaseClick(){
-    this.auth.decreasePage();
+  paginate(event: any) {
+    
+    this.auth.Page(event);
+    var dtata = this.dataSource;
+    
   }
+  pageindex(event: any) {
+    
+    this.auth.PageInd(event);
+    
+  }
+  
+  // decreaseClick(){
+  //   this.auth.decreasePage();
+  // }
   increaseClick(){
     this.auth.increasePage();
   }
