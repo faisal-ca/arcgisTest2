@@ -49,13 +49,10 @@ import { BmDialogBoxComponent } from './bm-dialog-box/bm-dialog-box.component';
     MatTableModule,
     MatInputModule,
     MatPaginatorModule,
-<<<<<<< HEAD
-    MatCheckboxModule,
-    MatSlideToggleModule
-=======
+
     ​​​​​​​​MatSlideToggleModule,
     MatDialogModule
->>>>>>> origin/bookmark
+
   ],
   providers: [AuthService,HomeAuthService],
   bootstrap: [AppComponent]
