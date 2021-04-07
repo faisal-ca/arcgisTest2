@@ -12,10 +12,6 @@
 <div id="mapArea" #mapViewNode></div>
 <div id="editArea" class="editArea-container" #expandViewbookmark>
   <input type="button" class="edit-button" value="Create bookmark" id="btnAddFeature" (click)="bookmarkform()" >
-  <button class="edit-button">
-    <span> List of Bookmark <mat-slide-toggle [(ngModel)]="showBmTable" (click)="bmtableClick()"></mat-slide-toggle></span>
-  </button>
-    
   <div id="bookmarkUpdateDiv" style="display:none; margin-top: 1em;" #bookmarkUpdateDiv>
     <h5 class="list-heading">Enter the Name</h5>
     
@@ -23,11 +19,88 @@
       <form [formGroup]="bookmarkForm">
       <label for="inputDescription" >Name:</label>
       <input  formControlName="bookmarkname" class="inputInfo" type="text" id="inputDescription" placeHolder="Enter description" ><br>
-      <input type="button" class="edit-button" value="Save" id="btnUpdate" (click)="Savebookmark()"  >
-      <input type="button" class="edit-button" value="Close" id="btnDelete" (click)="close()" >
+      <input type="button" class="edit-button_bm" value="Save" id="btnUpdate" (click)="Savebookmark()"  >&nbsp;&nbsp;
+      <input type="button" class="edit-button_bm" value="Close" id="btnDelete" (click)="close()" >
+    
       </form>
     </div>
   </div>
+  <button class="edit-button">
+    <span> List of Bookmark <mat-slide-toggle [(ngModel)]="showBmTable" (click)="bmtableClick()"></mat-slide-toggle></span>
+
+  </button>
+<br><br>    
+
+  <div class="wf">
+    <div id="tableDiv" class="div1" *ngIf="showBmTable">
+     
+        <table id="bmtable" mat-table [dataSource]="dataSource" class="mat-elevation-z8" >
+  
+       
+        <ng-container matColumnDef="Id">
+          <th mat-header-cell *matHeaderCellDef> ID </th>
+          <td mat-cell *matCellDef="let element"> {{element.Id}} </td>
+        </ng-container>
+      
+        <!-- Name Column -->
+        <ng-container matColumnDef="name" ng-repeat="element in List" >
+          <th mat-header-cell *matHeaderCellDef > Name </th>
+          <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+  
+        </ng-container>
+  
+      
+  
+        <ng-container matColumnDef="Xmin" ng-repeat="element in List">
+          <th mat-header-cell *matHeaderCellDef> Xmin </th>
+          <td mat-cell *matCellDef="let element"> {{element.Xmin}} </td>
+        </ng-container>
+  
+        <ng-container matColumnDef="Ymin" ng-repeat="element in List">
+          <th mat-header-cell *matHeaderCellDef> Ymin </th>
+          <td mat-cell *matCellDef="let element"> {{element.Ymin}} </td>
+        </ng-container>
+  
+        <ng-container matColumnDef="Xmax" ng-repeat="element in List">
+          <th mat-header-cell *matHeaderCellDef> Xmax </th>
+          <td mat-cell *matCellDef="let element"> {{element.Xmax}} </td>
+        </ng-container>
+  
+        <ng-container matColumnDef="Ymax" ng-repeat="element in List">
+          <th mat-header-cell *matHeaderCellDef> Ymax </th>
+          <td mat-cell *matCellDef="let element"> {{element.Ymax}} </td>
+        </ng-container>
+      
+        <!-- Weight Column -->
+        
+  
+        <ng-container matColumnDef="zoom">
+          <th mat-header-cell *matHeaderCellDef> Zoom </th>
+          <td mat-cell *matCellDef="let element"> <img src="./assets/images/zoom.png" class="imgZoom" (click)="zoomtoexten(element)"/>  </td>
+        </ng-container>
+  
+        <ng-container matColumnDef="Edit">
+          <th mat-header-cell *matHeaderCellDef> Edit </th>
+          <td mat-cell *matCellDef="let element"> <img src="./assets/images/edit.png" class="imgZoom" (click)="modify(element)"/>  </td>
+        </ng-container>
+  
+        <ng-container matColumnDef="Delete">
+          <th mat-header-cell *matHeaderCellDef> Delete </th>
+          <td mat-cell *matCellDef="let element"> <img src="./assets/images/delete.png" class="imgZoom" (click)="deletebookmark(element)"/>  </td>
+        </ng-container>
+  
+  
+  
+        
+      
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        
+        
+  
+      </table>
+      <mat-paginator class="pagnacolor" [pageSizeOptions]="[5]" showFirstLastButtons></mat-paginator>
+    </div>
   </div>
 <div id="editArea" class="editArea-container" #expandView>
   <div id="addFeatureDiv">
@@ -72,76 +145,3 @@
 </div>
 
 
-<div class="wf">
-  <div id="tableDiv" class="div1" *ngIf="showBmTable">
-   <!-- <mat-form-field>
-      <mat-label>Filter</mat-label>
-      <input matInput (keyup)="applyFilter($event)" placeholder="search" #input>
-    </mat-form-field>-->
-      <table id="bmtable" mat-table [dataSource]="dataSource" class="mat-elevation-z8" >
-
-      <!--- Note that these columns can be defined in any order.
-            The actual rendered columns are set as a property on the row definition" -->
-    
-      <!-- Position Column -->
-      <ng-container matColumnDef="Id">
-        <th mat-header-cell *matHeaderCellDef> ID </th>
-        <td mat-cell *matCellDef="let element"> {{element.Id}} </td>
-      </ng-container>
-    
-      <!-- Name Column -->
-      <ng-container matColumnDef="name" ng-repeat="element in List" >
-        <th mat-header-cell *matHeaderCellDef > Name </th>
-        <td mat-cell *matCellDef="let element"> {{element.name}} </td>
-
-      </ng-container>
-
-    
-
-      <ng-container matColumnDef="Xmin" ng-repeat="element in List">
-        <th mat-header-cell *matHeaderCellDef> Xmin </th>
-        <td mat-cell *matCellDef="let element"> {{element.Xmin}} </td>
-      </ng-container>
-
-      <ng-container matColumnDef="Ymin" ng-repeat="element in List">
-        <th mat-header-cell *matHeaderCellDef> Ymin </th>
-        <td mat-cell *matCellDef="let element"> {{element.Ymin}} </td>
-      </ng-container>
-
-      <ng-container matColumnDef="Xmax" ng-repeat="element in List">
-        <th mat-header-cell *matHeaderCellDef> Xmax </th>
-        <td mat-cell *matCellDef="let element"> {{element.Xmax}} </td>
-      </ng-container>
-
-      <ng-container matColumnDef="Ymax" ng-repeat="element in List">
-        <th mat-header-cell *matHeaderCellDef> Ymax </th>
-        <td mat-cell *matCellDef="let element"> {{element.Ymax}} </td>
-      </ng-container>
-    
-      <!-- Weight Column -->
-      
-
-      <ng-container matColumnDef="zoom">
-        <th mat-header-cell *matHeaderCellDef> Zoom </th>
-        <td mat-cell *matCellDef="let element"> <img src="./assets/images/zoom.png" class="imgZoom" (click)="zoomtoexten(element)"/>  </td>
-      </ng-container>
-
-      <ng-container matColumnDef="Edit">
-        <th mat-header-cell *matHeaderCellDef> Edit </th>
-        <td mat-cell *matCellDef="let element"> <img src="./assets/images/edit.png" class="imgZoom" (click)="modify(element)"/>  </td>
-      </ng-container>
-
-      <ng-container matColumnDef="Delete">
-        <th mat-header-cell *matHeaderCellDef> Delete </th>
-        <td mat-cell *matCellDef="let element"> <img src="./assets/images/delete.png" class="imgZoom" (click)="deletebookmark(element)"/>  </td>
-      </ng-container>
-
-
-
-      
-    
-      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-    </table>
-    <mat-paginator class="pagnacolor" [pageSizeOptions]="[5]" showFirstLastButtons></mat-paginator>
-  </div>

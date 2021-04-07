@@ -46,8 +46,10 @@ export class EsriMapComponent implements OnInit {
 
   displayedColumns: string[] = ['name','zoom','Edit','Delete'];
   dataSource:any = [];
+  
+
   userForm = new FormGroup({
-    name: new FormControl('', [Validators.required, Validators.maxLength(10)])
+  name: new FormControl('', [Validators.required, Validators.maxLength(10)])
 }); 
 bookmarkForm = new FormGroup({
   bookmarkname: new FormControl('', [Validators.required, Validators.maxLength(10)])
@@ -139,9 +141,7 @@ bookmarkForm = new FormGroup({
           "esri/widgets/Home",
           "esri/widgets/Popup",
           
-          
-          
-
+        
         ]);
 
         const container = this.mapViewEl.nativeElement;
@@ -263,15 +263,15 @@ bookmarkForm = new FormGroup({
         await this.homeAuthService.reloadBMlist(this.user_id);
         this.dataSource=HomeAuthService.dataSource;
         debugger;
-        document.getElementById("mapDiv")!.style.height='60%';
-        document.getElementById("tableDiv")!.style.height='40%';
+        //document.getElementById("mapDiv")!.style.height='60%';
+        //document.getElementById("tableDiv")!.style.height='40%';
         //await this.authService.reloadDatasource();
          // this.dataSource=data.body;
       }
       else{
         this.toggle=false;
-        document.getElementById("tableDiv")!.style.height='0%';
-        document.getElementById("mapDiv")!.style.height='100%';
+        //document.getElementById("tableDiv")!.style.height='0%';
+        //document.getElementById("mapDiv")!.style.height='100%';
       }
       });  
   }
@@ -302,25 +302,6 @@ bookmarkForm = new FormGroup({
     
   }
   
-  
-
-    
-
-    /*Updatebookmark(data:any)
-    {
-      
-      var bm= {"id":data.Id,"name":this.bookmarkForm.value.bookmarkname};
-      this.authService.updatebookmark(bm).subscribe((data:any)=>{
-        debugger;
-        if(data.body.logged)
-        {
-          alert(data.body.Message)
-          this.dataSource=this.homeAuthService.reloadBMlist(this.user_id);
-        }
-        debugger;
-      })
-     
-    }*/
     deletebookmark(data:any)
     {
       var bm= {"id":data.Id};
@@ -331,9 +312,7 @@ bookmarkForm = new FormGroup({
           alert(data.body.Message);
           //this.authService.reloadBMlist(this.user_id);
           this.homeAuthService.reloadBMlist(this.user_id);
-          
-          
-          
+ 
         }
        
         debugger
