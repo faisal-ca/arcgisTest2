@@ -33,7 +33,9 @@ export class HomeComponent implements OnInit {
       this.userName=data.body.data.name;
       this.cu_id=data.body.data.id;
       this.search=AuthService.searchString;
+
     });
+    this.dataSource= AuthService.dataSource;
   }
   logoutClick()
   {
@@ -70,8 +72,8 @@ export class HomeComponent implements OnInit {
         this.Tdata = data.body.list;
         
         this.tableExpandedFlag=true;
-        //await this.auth.reloadDatasource(AuthService.searchString);
-        this.dataSource= AuthService.dataSource;
+        await this.auth.reloadDatasource(AuthService.searchString);
+        
 
         document.getElementById("mapDiv")!.style.width='70%';
         document.getElementById("tableDiv")!.style.width='30%';
