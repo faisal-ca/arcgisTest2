@@ -104,7 +104,7 @@ def get_locationsUser():
       
       page=jj["page"]
       total_pages=0
-      ROWS_PER_PAGE=5
+      ROWS_PER_PAGE=jj["pagesize"]
 
       dbSession = Session()  
       obj_count=0
