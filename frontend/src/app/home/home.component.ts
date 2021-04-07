@@ -25,7 +25,7 @@ export class HomeComponent implements OnInit {
   dataSource:PeriodicElement[] = [];
   tableExpandedFlag:boolean=false;
   search:any='';
-  rowcount:any;
+  rowcount:any=1;
   constructor(public auth:AuthService,public router:Router, private homeAuth:HomeAuthService) { }
 
   ngOnInit(): void {
@@ -36,6 +36,12 @@ export class HomeComponent implements OnInit {
 
     });
     this.dataSource= AuthService.dataSource;
+    this.auth.tablecount().subscribe((data: any) => {
+
+      this.rowcount = data
+      
+
+    });
   }
   logoutClick()
   {
@@ -58,22 +64,17 @@ export class HomeComponent implements OnInit {
       }
     });
   }
-  tableClick(){
-    this.auth.tablecount().subscribe((data: any) => {
-
-      this.rowcount = data
-      
-
-    });
+  async tableClick(){
+    debugger;
+    var ddd=this.rowcount;
     this.currentPage=1;
     this.auth.locationList(this.currentPage,this.pagesize,"").subscribe(async (data:any)=>{
       if(data.body && !this.tableExpandedFlag)
       {
         this.Tdata = data.body.list;
-        
         this.tableExpandedFlag=true;
         await this.auth.reloadDatasource(AuthService.searchString);
-        
+        this.dataSource=AuthService.dataSource;
 
         document.getElementById("mapDiv")!.style.width='70%';
         document.getElementById("tableDiv")!.style.width='30%';
@@ -97,7 +98,7 @@ export class HomeComponent implements OnInit {
     this.homeAuth.panMap(c);
   }
   paginate(event: any) {
-    
+    this.currentPage=event;
     this.auth.Page(event);
     var dtata = this.dataSource;
     

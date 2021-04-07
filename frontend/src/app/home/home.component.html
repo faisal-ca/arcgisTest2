@@ -53,9 +53,9 @@
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
         <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
       </table>
-      <pagination-controls (pageChange)="currentPage = $event;paginate(currentPage)" (click)="$event.stopPropagation();"></pagination-controls>
+      <pagination-controls (pageChange)="paginate($event)" (click)="$event.stopPropagation();"></pagination-controls>
 
- Items per page:
+Items per page:
  <mat-select [(value)]="pagesize" (valueChange)="pageindex(pagesize)" style="width: 50px;margin-left: 15px"(click)="$event.stopPropagation();">
   <mat-option [value]="1">1</mat-option>
   <mat-option [value]="2">2</mat-option>
