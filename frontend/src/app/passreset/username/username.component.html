@@ -1,0 +1,101 @@
+<head>
+<!-- CSS only -->
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="signup-form">
+            <form [formGroup]="form">
+                <h2>Password reset</h2>
+                <div id="username-block">
+                    <p>Enter username and click send OTP</p>
+                    <hr>
+                    <div class="form-group">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">
+                                    <span class="fa fa-user-circle-o"></span>
+                                </span>                    
+                            </div>
+                            <input type="text" class="form-control" formControlName="username" id="name" name="name" placeholder="Name" required="required" />
+                        </div>
+                        <div *ngIf="UserSubmitted && f.username.hasError('required')" width="100px">
+                            <p class="errorText" >Name Required</p>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-primary btn-lg" (click)="onClickOTP()">Send OTP</button>
+                    </div>
+                </div>
+                <div id="otp-block">
+                    <p>Enter OTP sent to your email</p>
+                    <hr>
+                    <div class="form-group">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">
+                                    <span class="fa fa-user-circle-o"></span>
+                                </span>                    
+                            </div>
+                            <input type="text" class="form-control" formControlName="passkey" id="passkey" name="passkey" placeholder="OTP" required="required" />
+                        </div>
+                        <div *ngIf="UserSubmitted && f.passkey.hasError('required')" width="100px">
+                            <p class="errorText" >OTP Required</p>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-primary btn-lg" (click)="onClickCheck()">Check</button>
+                    </div>
+                </div>
+                <div id="password-block">
+                    <p>Enter new Password</p>
+                    <hr>
+                    <div class="form-group">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">
+                                    <span class="fa fa-lock"></span>
+                                </span>                    
+                            </div>
+                            <input type="password" class="form-control" formControlName="password" id="password" name="password" placeholder="password" required="required" />
+                        </div>
+                    </div>
+                    <div *ngIf="UserSubmitted && f.password.hasError('required')" width="100px">
+                        <p class="errorText" >Password Required</p>
+                    </div>
+                    <div class="form-group"> 
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">
+                                    <i class="fa fa-lock"></i>
+						            <i class="fa fa-check"></i>
+                                </span>                    
+                            </div>
+                            <input type="password" class="form-control" formControlName="confpassword" id="confpassword" name="confpassword" placeholder="Confirm password" required="required" />
+                        </div>
+                        <div *ngIf="UserSubmitted && f.confpassword.hasError('required')" width="100px">
+                            <p class="errorText" >Conf.Password Required</p>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-primary btn-lg" (click)="onClickPassword()">Reset password</button>
+                    </div>
+                </div>
+                <div id="changed-block">
+                    <p>Your password has been succesfully Changed</p>
+                    <hr>
+                </div>
+                <div>
+                    <p *ngIf="errorFlag" class="errorText">{{this.errorMessage}}</p>
+                </div>
+                <div>
+                    <p *ngIf="invalidPasswordFlag" class="errorText">Passwords do not match</p>
+                </div>
+            </form>
+            <div class="text-center">Already have an account? <a routerLink="/login" routerLinkActive="active">Login here</a></div>
+            
+        </div>
+        </div>
+</body> 

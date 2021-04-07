@@ -7,10 +7,12 @@ import {AuthService} from './services/authService'
 import {HomeAuthService} from './services/homeAuth';
 import { SignupComponent } from './signup/signup.component';
 import { WindowComponent } from './window/window.component';
+import { UsernameComponent } from './passreset/username/username.component'
 
 const routes: Routes = [
   {path:'login',component:LoginComponent, canActivate: [AuthService]},
   {path:'signup',component:SignupComponent, canActivate: [AuthService]},
+  {path:'forgot_password',component:UsernameComponent, canActivate: [AuthService]},
   {path:'profile',component:WindowComponent, canActivate: [HomeAuthService]},
   {path:'home',component:HomeComponent, canActivate: [HomeAuthService]}
 ];

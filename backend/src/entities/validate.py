@@ -8,7 +8,7 @@ from jsonschema import validate
 
 deleteloc_schema = {"type" : "object","properties" : {"id" : {"type" : "number"}}}
 
-userviewloc_schema = {"type" : "object","properties" : {"userid" : {"type" : "number"}}}
+userviewloc_schema = {"type" : "object","properties" : {"page" : {"type" : "number"}}}
 
 login_schema = {"type" : "object","properties" : {
     "username" : {"type" : "string"},
@@ -56,7 +56,7 @@ def userviewloc_check(request):
     try:
         ff=validate(instance=request, schema=userviewloc_schema)
         if ff is None:
-            if ('userid' not in request):
+            if ('page' not in request):
                 return "error"
             else:
                 return None
