@@ -6,11 +6,13 @@ import {HttpClient, HttpErrorResponse} from '@angular/common/http';
 import { map } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot } from '@angular/router';
+import { MatTableDataSource } from '@angular/material/table';
 @Injectable({
   providedIn: 'root'
 })
 
 export class HomeAuthService implements  CanActivate{
+  static dataSource:any=null;
   private datasource:any=[];
     private API_URL="http://127.0.0.1:5000";
     panRequest = new Subject<void>();
@@ -72,6 +74,34 @@ export class HomeAuthService implements  CanActivate{
         setTimeout(() => {
           this.panToWonderComplete();
         }, 2000);
+      });
+    }
+    BookMarkList(data:any): Observable<any> {
+      const head = new HttpHeaders({ 'content-type': 'application/json'} ); 
+      const body=JSON.stringify(data);
+      const httpOptions = {
+        
+        headers: head,
+        observe: 'response'
+      };
+      return this.http.post(`${this.API_URL}/bookmarklist` , body , {headers: head, observe: 'response'})
+              .pipe(catchError(this.erroHandler));
+    }
+ 
+    reloadBMlist(data:any){
+      var bmid= {"id":data}
+      return this.BookMarkList(bmid).subscribe((data:any)=>{
+        debugger;
+        if(data.body)
+        {
+          if(HomeAuthService.dataSource){
+            HomeAuthService.dataSource.data=data.body;
+          }
+          else{
+            HomeAuthService.dataSource=new MatTableDataSource(data.body);
+          }
+          
+        }
       });
     }
   }

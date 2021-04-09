@@ -17,6 +17,8 @@ export class LoginComponent implements OnInit {
 // search 
 
 
+ //git testing 9 -faisal
+ 
   constructor(public auth:AuthService,
               public fb:FormBuilder,
               public router:Router) { }

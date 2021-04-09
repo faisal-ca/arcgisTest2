@@ -37,7 +37,7 @@ deactivate () {
 # unset irrelevant variables
 deactivate nondestructive
 
-VIRTUAL_ENV="D:\faisal\python training\arcgisTest\backend\venv"
+VIRTUAL_ENV="D:\priyamol\GIT\arcgisTest2\backend\venv"
 export VIRTUAL_ENV
 
 _OLD_VIRTUAL_PATH="$PATH"

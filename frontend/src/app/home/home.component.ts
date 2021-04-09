@@ -23,6 +23,7 @@ export class HomeComponent implements OnInit {
   dataSource:any = [];
   tableExpandedFlag:boolean=false;
   search:any='';
+  checked:boolean=false;
   constructor(public auth:AuthService,public router:Router, private homeAuth:HomeAuthService) { }
 
   ngOnInit(): void {
@@ -59,6 +60,7 @@ export class HomeComponent implements OnInit {
       if(data.body && !this.tableExpandedFlag)
       {
         
+        this.checked=true;
         this.tableExpandedFlag=true;
         await this.auth.reloadDatasource(AuthService.searchString);
         this.dataSource=AuthService.dataSource;
@@ -69,6 +71,7 @@ export class HomeComponent implements OnInit {
         
       }
       else{
+        this.checked=false;
         document.getElementById("tableDiv")!.style.width='0%';
         document.getElementById("mapDiv")!.style.width='100%';
         this.tableExpandedFlag=false;
