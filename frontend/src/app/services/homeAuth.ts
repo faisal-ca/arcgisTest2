@@ -91,7 +91,7 @@ export class HomeAuthService implements  CanActivate{
     reloadBMlist(data:any){
       var bmid= {"id":data}
       return this.BookMarkList(bmid).subscribe((data:any)=>{
-        debugger;
+        
         if(data.body)
         {
           if(HomeAuthService.dataSource){
