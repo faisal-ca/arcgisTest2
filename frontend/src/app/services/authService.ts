@@ -102,8 +102,9 @@ export class AuthService implements  CanActivate{
               .pipe(catchError(this.erroHandler));
     }
     locationList(currentpage:number, pagesize:number, search:string): Observable<any> {
+      
       const head = new HttpHeaders({ 'content-type': 'application/json'} ); 
-      const body={"page": this.currentPage, "pagesize":pagesize, "search":search};
+      const body={"page": currentpage, "pagesize":pagesize, "search":search};
       const httpOptions = {
         
         headers: head,
@@ -155,6 +156,7 @@ export class AuthService implements  CanActivate{
     }
 
     reloadDatasource(search:string):any{
+      debugger;
       
       
       return this.locationList(this.currentPage, this.pagesize, search).subscribe((data:any)=>{
@@ -181,6 +183,7 @@ export class AuthService implements  CanActivate{
       //this.reloadDatasource(AuthService.searchString);
     }
     Page(event:any){
+      
       
     this.currentPage= event;
       

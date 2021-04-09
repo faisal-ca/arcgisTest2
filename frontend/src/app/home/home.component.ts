@@ -33,9 +33,7 @@ export class HomeComponent implements OnInit {
       this.userName=data.body.data.name;
       this.cu_id=data.body.data.id;
       this.search=AuthService.searchString;
-
     });
-    this.dataSource= AuthService.dataSource;
   }
   logoutClick()
   {
@@ -69,11 +67,11 @@ export class HomeComponent implements OnInit {
     this.auth.locationList(this.currentPage,this.pagesize,"").subscribe(async (data:any)=>{
       if(data.body && !this.tableExpandedFlag)
       {
-        this.Tdata = data.body.list;
+        //this.Tdata = data.body.list;
         
         this.tableExpandedFlag=true;
         await this.auth.reloadDatasource(AuthService.searchString);
-        
+        this.dataSource= data.body.list;
 
         document.getElementById("mapDiv")!.style.width='70%';
         document.getElementById("tableDiv")!.style.width='30%';
@@ -97,14 +95,19 @@ export class HomeComponent implements OnInit {
     this.homeAuth.panMap(c);
   }
   paginate(event: any) {
+    debugger;
     
-    this.auth.Page(event);
-    var dtata = this.dataSource;
-    
+    this.currentPage= event;
+    this.auth.locationList(this.currentPage,this.pagesize,"").subscribe(async (data:any)=>{
+      //this.Tdata = data.body.list;
+      this.dataSource= data.body.list;
+    });
   }
   pageindex(event: any) {
-    
-    this.auth.PageInd(event);
+    this.pagesize= event;
+    this.auth.locationList(this.currentPage,this.pagesize,"").subscribe(async (data:any)=>{
+      this.dataSource= data.body.list;
+    });
     
   }
   
