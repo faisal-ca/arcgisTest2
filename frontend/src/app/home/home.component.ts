@@ -33,8 +33,8 @@ export class HomeComponent implements OnInit {
       this.userName=data.body.data.name;
       this.cu_id=data.body.data.id;
       this.search=AuthService.searchString;
-
     });
+<<<<<<< HEAD
     this.dataSource= AuthService.dataSource;
     this.auth.tablecount().subscribe((data: any) => {
 
@@ -42,6 +42,8 @@ export class HomeComponent implements OnInit {
       
 
     });
+=======
+>>>>>>> e01edb8da4048ffda82bf038bc046ade87e3fce5
   }
   logoutClick()
   {
@@ -98,14 +100,26 @@ export class HomeComponent implements OnInit {
     this.homeAuth.panMap(c);
   }
   paginate(event: any) {
+<<<<<<< HEAD
     this.currentPage=event;
     this.auth.Page(event);
     var dtata = this.dataSource;
     
+=======
+    debugger;
+    
+    this.currentPage= event;
+    this.auth.locationList(this.currentPage,this.pagesize,"").subscribe(async (data:any)=>{
+      //this.Tdata = data.body.list;
+      this.dataSource= data.body.list;
+    });
+>>>>>>> e01edb8da4048ffda82bf038bc046ade87e3fce5
   }
   pageindex(event: any) {
-    
-    this.auth.PageInd(event);
+    this.pagesize= event;
+    this.auth.locationList(this.currentPage,this.pagesize,"").subscribe(async (data:any)=>{
+      this.dataSource= data.body.list;
+    });
     
   }
   
