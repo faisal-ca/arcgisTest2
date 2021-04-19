@@ -69,3 +69,48 @@ input:valid {
 .err{
   color: red;
 }
+
+table {
+  width: 50%;
+
+}
+
+th, td { 
+  text-align: left; 
+  padding: 7px; 
+ 
+} 
+th{
+  background-color:#869aa8;
+ 
+  color: #374046;
+  font-size: medium;
+}
+tr:nth-child(even) { 
+  background-color: #b2bfc9; 
+}
+tr:nth-child(odd) { 
+  background-color: #DCE7EF; 
+}
+.mat-form-field {
+  font-size: 14px;
+  width: 80%;
+  margin-left: 2px;
+  margin-top: 0px;
+  
+}
+
+
+.imgZoom{
+  width: 20px;
+  height: 20px;
+}
+.edit-button_bm {
+  font-size: 14px;
+  height: 30px;
+  margin-top: 5px;
+  width: 25%;
+  background-color: transparent;
+  border: 1px solid #0079c1;
+  color: #0079c1;
+}

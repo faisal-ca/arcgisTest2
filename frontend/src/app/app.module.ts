@@ -22,6 +22,10 @@ import { ProfileComponent } from './profile/profile.component';
 import { WindowComponent } from './window/window.component';
 import { UsernameComponent } from './passreset/username/username.component'
 
+import {​​​​​​​​MatSlideToggleModule}​​​​​​​​ from'@angular/material/slide-toggle';
+import { MatDialogModule } from '@angular/material/dialog';
+import { BmDialogBoxComponent } from './bm-dialog-box/bm-dialog-box.component';
+
 
 @NgModule({
   declarations: [
@@ -32,7 +36,8 @@ import { UsernameComponent } from './passreset/username/username.component'
     SignupComponent,
     ProfileComponent,
     WindowComponent,
-    UsernameComponent
+    UsernameComponent,
+    BmDialogBoxComponent
   ],
   imports: [
     BrowserModule,
@@ -45,7 +50,11 @@ import { UsernameComponent } from './passreset/username/username.component'
     NoopAnimationsModule,
     MatTableModule,
     MatInputModule,
-    MatPaginatorModule
+    MatPaginatorModule,
+
+    ​​​​​​​​MatSlideToggleModule,
+    MatDialogModule
+
   ],
   providers: [AuthService,HomeAuthService],
   bootstrap: [AppComponent]
