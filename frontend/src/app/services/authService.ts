@@ -9,6 +9,7 @@ import { map } from 'rxjs/operators';
 import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot } from '@angular/router';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
+import { CookieService } from 'ngx-cookie-service';
 @Injectable({
   providedIn: 'root'
 })
@@ -49,7 +50,7 @@ export class AuthService implements  CanActivate{
         headers: head,
         observe: 'response'
       };
-      return this.http.post(`${this.API_URL}/login`, body, {headers: head, observe: 'response'})
+      return this.http.post(`${this.API_URL}/login`, body, {headers: head, observe: 'response', withCredentials: true})
               .pipe(catchError(this.erroHandler));
     }
     signUpUser(person:any): Observable<any> {
@@ -60,7 +61,7 @@ export class AuthService implements  CanActivate{
         headers: head,
         observe: 'response'
       };
-      return this.http.post(`${this.API_URL}/signup`, body, {headers: head, observe: 'response'})
+      return this.http.post(`${this.API_URL}/signup`, body, {headers: head, observe: 'response', withCredentials: true})
               .pipe(catchError(this.erroHandler));
     }
     logout(): Observable<any> {
@@ -71,7 +72,7 @@ export class AuthService implements  CanActivate{
         headers: head,
         observe: 'response'
       };
-      return this.http.post(`${this.API_URL}/logout`, body, {headers: head, observe: 'response'})
+      return this.http.post(`${this.API_URL}/logout`, body, {headers: head, observe: 'response', withCredentials: true})
               .pipe(catchError(this.erroHandler));
     }
     
@@ -84,7 +85,8 @@ export class AuthService implements  CanActivate{
         headers: head,
         observe: 'response'
       };
-      return this.http.post(`${this.API_URL}/user_id`, body, {headers: head, observe: 'response'})
+      
+      return this.http.post(`${this.API_URL}/user_id`, body, {headers: head, observe: 'response', withCredentials: true})
               .pipe(catchError(this.erroHandler));
     }
     userInfo(): Observable<any> {
@@ -95,7 +97,7 @@ export class AuthService implements  CanActivate{
         headers: head,
         observe: 'response'
       });
-      return this.http.post(`${this.API_URL}/user_info`, body, {headers: head, observe: 'response'})
+      return this.http.post(`${this.API_URL}/user_info`, body, {headers: head, observe: 'response', withCredentials: true})
               .pipe(catchError(this.erroHandler));
     }
 
@@ -107,7 +109,7 @@ export class AuthService implements  CanActivate{
         headers: head,
         observe: 'response'
       };
-      return this.http.post(`${this.API_URL}/addbookmark`, body, {headers: head, observe: 'response'})
+      return this.http.post(`${this.API_URL}/addbookmark`, body, {headers: head, observe: 'response', withCredentials: true})
               .pipe(catchError(this.erroHandler));
     }
     updatebookmark(person:any): Observable<any> {
@@ -118,7 +120,7 @@ export class AuthService implements  CanActivate{
         headers: head,
         observe: 'response'
       };
-      return this.http.post(`${this.API_URL}/updatebookmark`, body, {headers: head, observe: 'response'})
+      return this.http.post(`${this.API_URL}/updatebookmark`, body, {headers: head, observe: 'response', withCredentials: true})
               .pipe(catchError(this.erroHandler));
     }
    deletebookmark(person:any): Observable<any> {
@@ -129,7 +131,7 @@ export class AuthService implements  CanActivate{
         headers: head,
         observe: 'response'
       };
-      return this.http.post(`${this.API_URL}/deletebm`, body, {headers: head, observe: 'response'})
+      return this.http.post(`${this.API_URL}/deletebm`, body, {headers: head, observe: 'response', withCredentials: true})
               .pipe(catchError(this.erroHandler));
     }
     
@@ -143,7 +145,7 @@ export class AuthService implements  CanActivate{
         headers: head,
         observe: 'response'
       };
-      return this.http.post(`${this.API_URL}/viewuserloc`, body, {headers: head, observe: 'response'})
+      return this.http.post(`${this.API_URL}/viewuserloc`, body, {headers: head, observe: 'response', withCredentials: true})
               .pipe(catchError(this.erroHandler));
     }
     forgotPassword(username:string): Observable<any> {
@@ -154,7 +156,7 @@ export class AuthService implements  CanActivate{
         headers: head,
         observe: 'response'
       };
-      return this.http.post(`${this.API_URL}/forgot`, body, {headers: head, observe: 'response'})
+      return this.http.post(`${this.API_URL}/forgot`, body, {headers: head, observe: 'response', withCredentials: true})
               .pipe(catchError(this.erroHandler));
     }
 
@@ -166,7 +168,7 @@ export class AuthService implements  CanActivate{
         headers: head,
         observe: 'response'
       };
-      return this.http.post(`${this.API_URL}/passkeycheck`, body, {headers: head, observe: 'response'})
+      return this.http.post(`${this.API_URL}/passkeycheck`, body, {headers: head, observe: 'response', withCredentials: true})
               .pipe(catchError(this.erroHandler));
     }
     resetPassword(username:string,password:string): Observable<any> {
@@ -177,7 +179,7 @@ export class AuthService implements  CanActivate{
         headers: head,
         observe: 'response'
       };
-      return this.http.post(`${this.API_URL}/resetpass`, body, {headers: head, observe: 'response'})
+      return this.http.post(`${this.API_URL}/resetpass`, body, {headers: head, observe: 'response', withCredentials: true})
               .pipe(catchError(this.erroHandler));
     }
 

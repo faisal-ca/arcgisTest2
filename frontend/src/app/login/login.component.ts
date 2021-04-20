@@ -28,7 +28,7 @@ export class LoginComponent implements OnInit {
       username: ['', Validators.required],
       password: ['', Validators.required]
     });
-
+    
     this.auth.isLogged().subscribe((data:any)=>{
       if(data.body.userid >0)
       {
@@ -43,6 +43,8 @@ export class LoginComponent implements OnInit {
     const password = this.form.value.password;
     var js={"username":username,"password":password};
       this.auth.addPerson(js).subscribe((data:any)=>{
+        
+        console.log(data);
         if(data.body.logged)
         {
           this.router.navigate(['home']);

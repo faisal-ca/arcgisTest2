@@ -21,7 +21,7 @@ import { SignupComponent } from './signup/signup.component';
 import { ProfileComponent } from './profile/profile.component';
 import { WindowComponent } from './window/window.component';
 import { UsernameComponent } from './passreset/username/username.component'
-
+import { CookieService } from 'ngx-cookie-service';
 import {​​​​​​​​MatSlideToggleModule}​​​​​​​​ from'@angular/material/slide-toggle';
 import { MatDialogModule } from '@angular/material/dialog';
 import { BmDialogBoxComponent } from './bm-dialog-box/bm-dialog-box.component';
@@ -56,7 +56,7 @@ import { BmDialogBoxComponent } from './bm-dialog-box/bm-dialog-box.component';
     MatDialogModule
 
   ],
-  providers: [AuthService,HomeAuthService],
+  providers: [AuthService,HomeAuthService,CookieService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -7,6 +7,9 @@ import { HomeAuthService } from '../services/homeAuth';
 import {MatTableDataSource} from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
 import { ViewChild } from '@angular/core';
+import { CookieService } from 'ngx-cookie-service';
+import { browser } from 'protractor';
+import { Cookie } from 'ng2-cookies/ng2-cookies';
 
 
 @Component({
@@ -24,9 +27,10 @@ export class HomeComponent implements OnInit {
   tableExpandedFlag:boolean=false;
   search:any='';
   checked:boolean=false;
-  constructor(public auth:AuthService,public router:Router, private homeAuth:HomeAuthService) { }
+  constructor(public auth:AuthService,public router:Router, private homeAuth:HomeAuthService, private cookieService: CookieService ) { }
 
   ngOnInit(): void {
+    
     this.auth.userInfo().subscribe((data:any)=>{
       this.userName=data.body.data.name;
       this.cu_id=data.body.data.id;
@@ -38,6 +42,10 @@ export class HomeComponent implements OnInit {
     this.auth.logout().subscribe((data:any)=>{
       if(!data.body.logged)
       {
+        var cc=this.cookieService.getAll();
+        var dd=document.cookie;
+        this.cookieService.deleteAll('/', '127.0.0.1');
+        
         this.router.navigate(['login']);
       }
       else{

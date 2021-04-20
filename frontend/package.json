@@ -25,6 +25,8 @@
     "@types/arcgis-js-api": "^4.18.0",
     "esri": "0.0.1-security",
     "esri-loader": "^3.0.0",
+    "ng2-cookies": "^1.0.12",
+    "ngx-cookie-service": "^11.0.2",
     "rxjs": "~6.6.0",
     "tslib": "^2.0.0",
     "zone.js": "~0.11.3"

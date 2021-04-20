@@ -15,6 +15,8 @@ from flask_login.config import COOKIE_NAME, EXEMPT_METHODS
 from flask_mail import Mail, Message
 from flask_login import (current_user, LoginManager,
                              login_user, logout_user)
+from flask import session                             
+from flask.sessions import SecureCookieSessionInterface
 
 engine = create_engine('postgresql+psycopg2://login:login@nestit-532/gis')
 from sqlalchemy.ext.declarative import declarative_base
@@ -24,11 +26,11 @@ Session = sessionmaker(bind=engine)
 app = Flask(__name__)
 app.secret_key = 'some key'
 CORS(app)
-c_u=User()
+#c_u=User()
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
-
+session_cookie = SecureCookieSessionInterface().get_signing_serializer(app)
 
 
 mail= Mail(app)
@@ -43,12 +45,12 @@ mail = Mail(app)
 def login_required(func):
    @wraps(func)
    def decorated_view(*args, **kwargs):
-      global c_u
+      #global c_u
       if request.method in EXEMPT_METHODS:
             return func(*args, **kwargs)
       elif current_app.config.get('LOGIN_DISABLED'):
             return func(*args, **kwargs)
-      elif not c_u.is_authenticated:
+      elif not current_user.is_authenticated:
             #return current_app.login_manager.unauthorized()
             return jsonify({"success":False,"Message":"user not logged in","logged":False})
       return func(*args, **kwargs)
@@ -226,9 +228,9 @@ def login():
          userDetails = schema.dump(user_objects)
          result={"success":True,"Message":"User logged in","user":userDetails,"logged":True}
          dbSession.close()
-         login_user(user_objects, remember=True)
-         global c_u
-         c_u=copy.deepcopy(current_user)
+         login_user(user_objects, remember=False, force=False)
+         #global c_u
+         #c_u=copy.deepcopy(current_user)
          return jsonify(result)
       else:
          result={"success":False,"Message":"ID not found","user":"","logged":False}
@@ -240,7 +242,7 @@ def login():
 @app.route('/logout', methods=['POST'])
 def logout():
     logout_user()
-    global c_u
+    #global c_u
     c_u=copy.deepcopy(current_user)
     return jsonify(**{'result': 200,
                       'logged':False,
@@ -269,11 +271,11 @@ def signup():
 
 @app.route('/user_info', methods=['POST'])
 def user_info():
-   global c_u
+   #global c_u
    schema = UserSchema(many=False)
-   user = schema.dump(c_u)
+   user = schema.dump(current_user)
    
-   if c_u.is_authenticated:
+   if current_user.is_authenticated:
       resp = {"result": 200,
                "logged":True,
                "data": user}
@@ -354,14 +356,23 @@ def addbookmark():
    except:
       return jsonify({"success":False,"Message":"error occured","logged":True})
 
+@app.after_request
+def after_request(response):
+  response.headers.add('Access-Control-Allow-Origin', 'http://localhost:4200')
+  response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
+  response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS')
+  response.headers.add('Access-Control-Allow-Credentials', 'true')
+  #same_cookie = session_cookie.dumps(dict(session))
+  #response.headers.add("Set-Cookie", f"my_cookie={same_cookie}; Secure; HttpOnly; SameSite=None; Path=/;")
+  return response
 
 @app.route('/user_id', methods=['POST'])
 def user_idinfo():
-   global c_u
-   if c_u.is_authenticated:
+   #global c_u
+   if current_user.is_authenticated:
       resp = {"result": 200,
                "logged":True,
-               "userid": c_u.id}
+               "userid": current_user.id}
    else:
       resp = {"result": 401,
                "logged":False,

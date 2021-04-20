@@ -39,6 +39,7 @@ export class HomeAuthService implements  CanActivate{
     ): Observable<boolean>|Promise<boolean>|boolean {
       
       return this.isLogged().pipe(map((data:any)=>{
+        
         if(data.body.userid <0)
         {
           this.router.navigate(['login']);
@@ -57,7 +58,7 @@ export class HomeAuthService implements  CanActivate{
         headers: head,
         observe: 'response'
       };
-      return this.http.post(`${this.API_URL}/user_id`, body, {headers: head, observe: 'response'})
+      return this.http.post(`${this.API_URL}/user_id`, body, {headers: head, observe: 'response', withCredentials: true})
               .pipe(catchError(this.erroHandler));
     }
     
@@ -84,7 +85,7 @@ export class HomeAuthService implements  CanActivate{
         headers: head,
         observe: 'response'
       };
-      return this.http.post(`${this.API_URL}/bookmarklist` , body , {headers: head, observe: 'response'})
+      return this.http.post(`${this.API_URL}/bookmarklist` , body , {headers: head, observe: 'response', withCredentials: true})
               .pipe(catchError(this.erroHandler));
     }
  

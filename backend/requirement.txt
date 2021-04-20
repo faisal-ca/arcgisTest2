@@ -1,0 +1,11 @@
+# to install: pip install -r requirement.txt
+flask
+sqlalchemy
+geoalchemy2
+marshmallow
+flask_inputs
+jsonschema
+flask_cors
+flask_login
+flask_mail
+psycopg2
